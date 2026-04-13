@@ -45,7 +45,8 @@
     </div>
 
     <div class="form-card">
-      <form id="formPosting">
+      <form action="{{ route('user.tambah.posting.post') }}" method="POST" enctype="multipart/form-data" id="formPosting">
+        @csrf
 
         <div class="form-group">
           <label>Foto Barang</label>
@@ -59,34 +60,34 @@
               <strong>Klik untuk upload</strong> atau drag & drop<br>
               <span>PNG, JPG, JPEG (maks. 5MB)</span>
             </div>
-            <input type="file" accept="image/*" onchange="previewImage(this)">
+            <input type="file" name="foto" accept="image/*" onchange="previewImage(this)">
           </div>
           <img id="previewImg" class="preview-img" alt="Preview">
         </div>
 
         <div class="form-group">
           <label for="namaBarang">Nama Barang <span style="color:var(--lost)">*</span></label>
-          <input type="text" id="namaBarang" class="form-control-custom"
+          <input type="text" id="namaBarang" name="nama_barang" class="form-control-custom"
             placeholder="Contoh: iPhone 13, Dompet hitam..." required>
         </div>
 
         <div class="form-group">
           <label for="deskripsi">Deskripsi Barang <span style="color:var(--lost)">*</span></label>
-          <textarea id="deskripsi" class="form-control-custom" rows="3"
+          <textarea id="deskripsi" name="deskripsi_barang" class="form-control-custom" rows="3"
             placeholder="Jelaskan ciri-ciri barang secara detail..."
             required style="resize:vertical;"></textarea>
         </div>
 
         <div class="form-group">
           <label for="lokasi">Lokasi Ditemukan/Hilang <span style="color:var(--lost)">*</span></label>
-          <input type="text" id="lokasi" class="form-control-custom"
+          <input type="text" id="lokasi" name="lokasi" class="form-control-custom"
             placeholder="Contoh: Kantin GKU, Parkir TULT..." required>
         </div>
 
         {{-- contact person, muncul kalau Found --}}
         <div class="form-group" id="contactGroup">
           <label for="contact">Contact Person <span style="color:var(--lost)">*</span></label>
-          <input type="text" id="contact" class="form-control-custom"
+          <input type="text" id="contact" name="contact_person" class="form-control-custom"
             placeholder="Nama : Nomor HP">
         </div>
 
@@ -96,18 +97,18 @@
             <button type="button" class="status-btn found active" id="btnFound" onclick="setStatus('Found')">✓ Found</button>
             <button type="button" class="status-btn lost" id="btnLost" onclick="setStatus('Lost')">! Lost</button>
           </div>
-          <input type="hidden" id="statusBarang" value="Found">
+          <input type="hidden" id="statusBarang" name="status" value="Found">
         </div>
 
         <div class="form-group">
           <label for="tanggal">Tanggal <span style="color:var(--lost)">*</span></label>
-          <input type="date" id="tanggal" class="form-control-custom" required>
+          <input type="date" id="tanggal" name="tanggal" class="form-control-custom" required>
         </div>
 
         {{-- janji temu, muncul kalau Found --}}
         <div class="form-group" id="janjiGroup">
           <label for="janjiTemu">📍 Janji Temu / Lokasi Pengambilan <span style="color:var(--lost)">*</span></label>
-          <input type="text" id="janjiTemu" class="form-control-custom"
+          <input type="text" id="janjiTemu" name="janji_temu" class="form-control-custom"
             placeholder="Contoh: Lobby GKU, Pos Satpam...">
         </div>
 
@@ -181,49 +182,7 @@ function showToast(msg, type) {
   setTimeout(function() { t.classList.remove('show'); }, 3000);
 }
 
-document.getElementById('formPosting').addEventListener('submit', function(e) {
-  e.preventDefault();
 
-  var nama      = document.getElementById('namaBarang').value.trim();
-  var deskripsi = document.getElementById('deskripsi').value.trim();
-  var lokasi    = document.getElementById('lokasi').value.trim();
-  var status    = document.getElementById('statusBarang').value;
-  var tanggal   = document.getElementById('tanggal').value;
-  var contact   = status === 'Found' ? document.getElementById('contact').value.trim() : '-';
-  var janjiTemu = status === 'Found' ? document.getElementById('janjiTemu').value.trim() : '-';
-  var prevImg   = document.getElementById('previewImg');
-
-  if (!nama || !deskripsi || !lokasi) {
-    showToast('Harap isi semua field yang wajib diisi.', 'error');
-    return;
-  }
-  if (status === 'Found' && (!contact || !janjiTemu)) {
-    showToast('Harap isi Contact Person dan Janji Temu.', 'error');
-    return;
-  }
-
-  var foto = prevImg.classList.contains('show') ? prevImg.src : null;
-
-  var postingan = JSON.parse(localStorage.getItem('postingan') || '[]');
-  postingan.unshift({
-    id:        Date.now(),
-    nama:      nama,
-    deskripsi: deskripsi,
-    lokasi:    lokasi,
-    contact:   contact,
-    status:    status,
-    tanggal:   tanggal,
-    janjiTemu: janjiTemu,
-    foto:      foto,
-    waktu:     new Date().toLocaleDateString('id-ID')
-  });
-  localStorage.setItem('postingan', JSON.stringify(postingan));
-
-  showToast('Postingan berhasil ditambahkan!', 'success');
-  setTimeout(function() {
-    window.location.href = '{{ route("user.riwayat.posting") }}';
-  }, 1200);
-});
 
 setStatus('Found');
 </script>

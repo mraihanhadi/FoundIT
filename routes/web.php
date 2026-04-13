@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ItemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,9 +33,7 @@ Route::post('/signup', [AuthController::class, 'register_post'])->name('signup.p
 ══════════════════════════════════════ */
 Route::prefix('user')->middleware(['auth', 'role:user'])->group(function () {
 
-    Route::get('/beranda', function () {
-        return view('user.Berandauser');
-    })->name('user.beranda');
+    Route::get('/beranda', [ItemController::class, 'index'])->name('user.beranda');
 
     Route::get('/all-item', function () {
         return view('user.AllItemUser');
@@ -43,6 +42,7 @@ Route::prefix('user')->middleware(['auth', 'role:user'])->group(function () {
     Route::get('/tambah-posting', function () {
         return view('user.Tambahpostinguser');
     })->name('user.tambah.posting');
+    Route::post('/tambah-posting', [ItemController::class, 'store'])->name('user.tambah.posting.post');
 
     Route::get('/riwayat-posting', function () {
         return view('user.riwayatpostinganUser');

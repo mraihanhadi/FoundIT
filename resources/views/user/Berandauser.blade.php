@@ -17,125 +17,21 @@
 
   <div class="item-grid" id="itemGrid">
 
-    <div class="item-card" onclick="openPopup('iphone')">
+    @forelse($items as $item)
+    <div class="item-card" onclick="openPopup('item_{{ $item->id }}')">
       <div class="card-img-wrap">
-        <img src="{{ asset('gambar/iPhone13.jpg') }}" alt="Iphone 13"
-          onerror="this.src='https://placehold.co/400x400/EEF3FF/7B9EFF?text=Iphone+13'">
+        <img src="{{ $item->foto ? asset('storage/' . $item->foto) : 'https://placehold.co/400x400/EEF3FF/7B9EFF?text=Foto+Barang' }}" alt="{{ $item->nama_barang }}"
+          onerror="this.src='https://placehold.co/400x400/EEF3FF/7B9EFF?text=Foto+Barang'">
       </div>
       <div class="card-body">
-        <div class="card-title">Iphone 13</div>
-        <div class="card-loc">📍 Masjid Syamul Ulum</div>
-        <span class="card-status found">Found</span>
+        <div class="card-title">{{ $item->nama_barang }}</div>
+        <div class="card-loc">📍 {{ $item->lokasi }}</div>
+        <span class="card-status {{ strtolower($item->status) }}">{{ $item->status }}</span>
       </div>
     </div>
-
-    <div class="item-card" onclick="openPopup('plushie')">
-      <div class="card-img-wrap">
-        <img src="{{ asset('gambar/crybaby.jpg') }}" alt="Plushie Crybaby"
-          onerror="this.src='https://placehold.co/400x400/FFF0EE/EF4444?text=Plushie'">
-      </div>
-      <div class="card-body">
-        <div class="card-title">Plushie Crybaby</div>
-        <div class="card-loc">📍 Tult0710</div>
-        <span class="card-status lost">Lost</span>
-      </div>
-    </div>
-
-    <div class="item-card" onclick="openPopup('botol')">
-      <div class="card-img-wrap">
-        <img src="{{ asset('gambar/bottle.jpg') }}" alt="Botol Minum"
-          onerror="this.src='https://placehold.co/400x400/FFF0EE/EF4444?text=Botol+Minum'">
-      </div>
-      <div class="card-body">
-        <div class="card-title">Botol Minum</div>
-        <div class="card-loc">📍 Parkir TULT</div>
-        <span class="card-status lost">Lost</span>
-      </div>
-    </div>
-
-    <div class="item-card" onclick="openPopup('ktm')">
-      <div class="card-img-wrap">
-        <img src="{{ asset('gambar/ktm.jpg') }}" alt="KTM"
-          onerror="this.src='https://placehold.co/400x400/EEF3FF/7B9EFF?text=KTM'">
-      </div>
-      <div class="card-body">
-        <div class="card-title">KTM</div>
-        <div class="card-loc">📍 Kantin GKU</div>
-        <span class="card-status found">Found</span>
-      </div>
-    </div>
-
-    <div class="item-card" onclick="openPopup('cushion')">
-      <div class="card-img-wrap">
-        <img src="{{ asset('gambar/cushion.jpg') }}" alt="Cushion"
-          onerror="this.src='https://placehold.co/400x400/EEF3FF/7B9EFF?text=Cushion'">
-      </div>
-      <div class="card-body">
-        <div class="card-title">Cushion</div>
-        <div class="card-loc">📍 Mushola wanita Tult</div>
-        <span class="card-status found">Found</span>
-      </div>
-    </div>
-
-    <div class="item-card" onclick="openPopup('iphone')">
-      <div class="card-img-wrap">
-        <img src="{{ asset('gambar/iPhone13.jpg') }}" alt="Iphone 13"
-          onerror="this.src='https://placehold.co/400x400/EEF3FF/7B9EFF?text=Iphone+13'">
-      </div>
-      <div class="card-body">
-        <div class="card-title">Iphone 13</div>
-        <div class="card-loc">📍 Masjid Syamul Ulum</div>
-        <span class="card-status found">Found</span>
-      </div>
-    </div>
-
-    <div class="item-card" onclick="openPopup('plushie')">
-      <div class="card-img-wrap">
-        <img src="{{ asset('gambar/crybaby.jpg') }}" alt="Plushie Crybaby"
-          onerror="this.src='https://placehold.co/400x400/FFF0EE/EF4444?text=Plushie'">
-      </div>
-      <div class="card-body">
-        <div class="card-title">Plushie Crybaby</div>
-        <div class="card-loc">📍 Tult0710</div>
-        <span class="card-status lost">Lost</span>
-      </div>
-    </div>
-
-    <div class="item-card" onclick="openPopup('ktm')">
-      <div class="card-img-wrap">
-        <img src="{{ asset('gambar/ktm.jpg') }}" alt="KTM"
-          onerror="this.src='https://placehold.co/400x400/EEF3FF/7B9EFF?text=KTM'">
-      </div>
-      <div class="card-body">
-        <div class="card-title">KTM</div>
-        <div class="card-loc">📍 Kantin GKU</div>
-        <span class="card-status found">Found</span>
-      </div>
-    </div>
-
-    <div class="item-card" onclick="openPopup('cushion')">
-      <div class="card-img-wrap">
-        <img src="{{ asset('gambar/cushion.jpg') }}" alt="Cushion"
-          onerror="this.src='https://placehold.co/400x400/EEF3FF/7B9EFF?text=Cushion'">
-      </div>
-      <div class="card-body">
-        <div class="card-title">Cushion</div>
-        <div class="card-loc">📍 Mushola wanita Tult</div>
-        <span class="card-status found">Found</span>
-      </div>
-    </div>
-
-    <div class="item-card" onclick="openPopup('botol')">
-      <div class="card-img-wrap">
-        <img src="{{ asset('gambar/bottle.jpg') }}" alt="Botol Minum"
-          onerror="this.src='https://placehold.co/400x400/FFF0EE/EF4444?text=Botol+Minum'">
-      </div>
-      <div class="card-body">
-        <div class="card-title">Botol Minum</div>
-        <div class="card-loc">📍 Parkir TULT</div>
-        <span class="card-status lost">Lost</span>
-      </div>
-    </div>
+    @empty
+      <div style="text-align:center;width:100%;padding:20px;color:#888;">Belum ada postingan barang.</div>
+    @endforelse
 
   </div>
 </main>
@@ -257,61 +153,19 @@
 <script>
 // data item statis buat dummy
 var itemData = {
-  iphone: {
-    username: 'Kevin Liu',
-    avatar: '{{ asset("gambar/kevin.jpg") }}',
-    itemImg: '{{ asset("gambar/iPhone13.jpg") }}',
-    nama: 'Iphone 13',
-    deskripsi: 'Iphone 13 warna pink, kondisi baik',
-    lokasi: 'Masjid Syamul Ulum',
-    status: 'Found',
-    tanggal: '01/05/2026',
-    lokasiAmbil: 'Lobby GKU Lt.1'
+@foreach($items as $item)
+  "item_{{ $item->id }}": {
+    username: '{{ addslashes($item->user->name ?? "User") }}',
+    avatar: 'https://ui-avatars.com/api/?name={{ urlencode($item->user->name ?? "User") }}&background=C8D8FF&color=5B7FE8',
+    itemImg: '{{ $item->foto ? asset("storage/" . $item->foto) : "https://placehold.co/400x400/EEF3FF/7B9EFF?text=Foto+Barang" }}',
+    nama: '{{ addslashes($item->nama_barang) }}',
+    deskripsi: '{{ addslashes($item->deskripsi_barang) }}',
+    lokasi: '{{ addslashes($item->lokasi) }}',
+    status: '{{ $item->status }}',
+    tanggal: '{{ \Carbon\Carbon::parse($item->tanggal)->format("d/m/Y") }}',
+    lokasiAmbil: '{{ addslashes($item->janji_temu ?? "") }}'
   },
-  plushie: {
-    username: 'Rina',
-    avatar: 'https://ui-avatars.com/api/?name=Rina&background=FFD6D6&color=c0392b',
-    itemImg: '{{ asset("gambar/crybaby.jpg") }}',
-    nama: 'Plushie Crybaby',
-    deskripsi: 'Boneka Crybaby warna pink',
-    lokasi: 'Tult0710',
-    status: 'Lost',
-    tanggal: '03/05/2026',
-    lokasiAmbil: ''
-  },
-  botol: {
-    username: 'Sari',
-    avatar: 'https://ui-avatars.com/api/?name=Sari&background=FFD6D6&color=c0392b',
-    itemImg: '{{ asset("gambar/bottle.jpg") }}',
-    nama: 'Botol Minum',
-    deskripsi: 'Botol minum warna cream dengan stiker apel',
-    lokasi: 'Parkir TULT',
-    status: 'Lost',
-    tanggal: '04/05/2026',
-    lokasiAmbil: ''
-  },
-  ktm: {
-    username: 'Han',
-    avatar: 'https://ui-avatars.com/api/?name=Han&background=D6E4FF&color=3B82F6',
-    itemImg: '{{ asset("gambar/ktm.jpg") }}',
-    nama: 'KTM',
-    deskripsi: 'Kartu Tanda Mahasiswa atas nama Han',
-    lokasi: 'Kantin GKU',
-    status: 'Found',
-    tanggal: '05/05/2026',
-    lokasiAmbil: 'Pos Satpam Gerbang Utama'
-  },
-  cushion: {
-    username: 'Minju',
-    avatar: '{{ asset("gambar/minju.jpg") }}',
-    itemImg: '{{ asset("gambar/cushion.jpg") }}',
-    nama: 'Cushion',
-    deskripsi: 'Cushion merk Clio',
-    lokasi: 'Mushola wanita Tult',
-    status: 'Found',
-    tanggal: '08/05/2026',
-    lokasiAmbil: 'Mushola wanita Tult'
-  }
+@endforeach
 };
 
 var currentPopupData = null;
@@ -349,38 +203,7 @@ function _showPopup(avatar, username, itemImg, nama, deskripsi, lokasi, tanggal,
   document.body.style.overflow = 'hidden';
 }
 
-// load postingan user dari localStorage kalau ada
-function loadPostinganUser() {
-  var postingan = JSON.parse(localStorage.getItem('postingan') || '[]');
-  var approved  = postingan.filter(function(p) { return p.approved; });
-  var grid      = document.getElementById('itemGrid');
 
-  approved.forEach(function(p) {
-    var card = document.createElement('div');
-    card.className = 'item-card';
-    card.onclick = function() {
-      currentPopupData = p;
-      _showPopup(
-        'https://ui-avatars.com/api/?name=User&background=C8D8FF&color=5B7FE8',
-        p.contact || 'User',
-        p.foto || 'https://placehold.co/400x400/EEF3FF/7B9EFF?text=Foto',
-        p.nama, p.deskripsi, p.lokasi, p.tanggal, p.status, p.janjiTemu
-      );
-    };
-    card.innerHTML =
-      '<div class="card-img-wrap">' +
-        '<img src="' + (p.foto || 'https://placehold.co/400x400/EEF3FF/7B9EFF?text=Foto') + '" alt="' + p.nama + '" ' +
-          'onerror="this.src=\'https://placehold.co/400x400/EEF3FF/7B9EFF?text=Foto\'">' +
-      '</div>' +
-      '<div class="card-body">' +
-        '<div class="card-title">' + p.nama + '</div>' +
-        '<div class="card-loc">📍 ' + p.lokasi + '</div>' +
-        '<span class="card-status ' + p.status.toLowerCase() + '">' + p.status + '</span>' +
-      '</div>';
-    grid.appendChild(card);
-  });
-}
-loadPostinganUser();
 
 function closePopup() {
   document.getElementById('popupOverlay').classList.remove('show');
