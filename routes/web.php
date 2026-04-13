@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,17 +18,19 @@ Route::get('/', function () {
 Route::get('/signin', function () {
     return view('signin');
 })->name('signin');
+Route::post('/signin', [AuthController::class, 'login_post'])->name('signin.post');
 
 Route::get('/signup', function () {
     return view('signup');
 })->name('signup');
+Route::post('/signup', [AuthController::class, 'register_post'])->name('signup.post');
 
 /* ══════════════════════════════════════
    USER ROUTES
    Prefix  : /user
    Views   : resources/views/user/
 ══════════════════════════════════════ */
-Route::prefix('user')->group(function () {
+Route::prefix('user')->middleware(['auth', 'role:user'])->group(function () {
 
     Route::get('/beranda', function () {
         return view('user.Berandauser');
@@ -108,7 +111,7 @@ Route::prefix('user')->group(function () {
    Prefix  : /admin
    Views   : resources/views/admin/
 ══════════════════════════════════════ */
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/beranda', function () {
         return view('admin.berandaAdmin');
     })->name('admin.beranda');
@@ -149,6 +152,4 @@ Route::get('/tambah-posting', function () {
 })->name('admin.tambah.posting');
 });
 /* ── LOGOUT ── */
-Route::get('/logout', function () {
-    return redirect()->route('signin');
-})->name('logout');
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
