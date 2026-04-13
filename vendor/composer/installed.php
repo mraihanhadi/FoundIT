@@ -1,15 +1,24 @@
 <?php return array(
     'root' => array(
         'name' => 'laravel/laravel',
-        'pretty_version' => 'v13.1.0',
-        'version' => '13.1.0.0',
-        'reference' => null,
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => 'd1529fa5a54ba094bb3fdfd94ec85fa550fe873a',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
+        'barryvdh/laravel-debugbar' => array(
+            'pretty_version' => 'v4.2.3',
+            'version' => '4.2.3.0',
+            'reference' => '19b1d385cd5302aa4bf18737689e4e7115603e35',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../barryvdh/laravel-debugbar',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
         'brick/math' => array(
             'pretty_version' => '0.14.8',
             'version' => '0.14.8.0',
@@ -398,9 +407,9 @@
             'dev_requirement' => false,
         ),
         'laravel/laravel' => array(
-            'pretty_version' => 'v13.1.0',
-            'version' => '13.1.0.0',
-            'reference' => null,
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => 'd1529fa5a54ba094bb3fdfd94ec85fa550fe873a',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -433,6 +442,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'laravel/sentinel' => array(
+            'pretty_version' => 'v1.1.0',
+            'version' => '1.1.0.0',
+            'reference' => '972d9885d9d14312a118e9565c4e6ecc5e751ea1',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../laravel/sentinel',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
         'laravel/serializable-closure' => array(
             'pretty_version' => 'v2.0.10',
             'version' => '2.0.10.0',
@@ -441,6 +459,15 @@
             'install_path' => __DIR__ . '/../laravel/serializable-closure',
             'aliases' => array(),
             'dev_requirement' => false,
+        ),
+        'laravel/telescope' => array(
+            'pretty_version' => 'v5.19.0',
+            'version' => '5.19.0.0',
+            'reference' => '5e95df170d14e03dd74c4b744969cf01f67a050b',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../laravel/telescope',
+            'aliases' => array(),
+            'dev_requirement' => true,
         ),
         'laravel/tinker' => array(
             'pretty_version' => 'v3.0.0',
@@ -513,6 +540,12 @@
             'install_path' => __DIR__ . '/../league/uri-interfaces',
             'aliases' => array(),
             'dev_requirement' => false,
+        ),
+        'maximebf/debugbar' => array(
+            'dev_requirement' => true,
+            'replaced' => array(
+                0 => 'v3.6.4',
+            ),
         ),
         'mockery/mockery' => array(
             'pretty_version' => '1.6.12',
@@ -619,6 +652,24 @@
             'aliases' => array(),
             'dev_requirement' => true,
         ),
+        'php-debugbar/php-debugbar' => array(
+            'pretty_version' => 'v3.6.4',
+            'version' => '3.6.4.0',
+            'reference' => '9b25a64b07a1d6820a3c33e0d59338d30fe1d683',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../php-debugbar/php-debugbar',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'php-debugbar/symfony-bridge' => array(
+            'pretty_version' => 'v1.1.0',
+            'version' => '1.1.0.0',
+            'reference' => 'e37d2debe5d316408b00d0ab2688d9c2cf59b5ad',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../php-debugbar/symfony-bridge',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
         'phpoption/phpoption' => array(
             'pretty_version' => '1.9.5',
             'version' => '1.9.5.0',
@@ -674,9 +725,9 @@
             'dev_requirement' => true,
         ),
         'phpunit/phpunit' => array(
-            'pretty_version' => '12.5.14',
-            'version' => '12.5.14.0',
-            'reference' => '47283cfd98d553edcb1353591f4e255dc1bb61f0',
+            'pretty_version' => '12.5.15',
+            'version' => '12.5.15.0',
+            'reference' => 'aeb6899ffdbbf4b4ff5e6b6ebb77b35c51bb6d9a',
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpunit/phpunit',
             'aliases' => array(),
