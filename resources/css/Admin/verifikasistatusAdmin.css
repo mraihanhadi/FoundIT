@@ -1,0 +1,166 @@
+/* =============================================
+   resources/css/admin/verifikasistatusAdmin.css
+   ============================================= */
+
+/* ══ PAGE TITLE ══ */
+.page-title-bar { margin-bottom: 1.5rem; }
+.page-title-bar h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* ══ TABLE WRAP ══ */
+.app-body .status-table-wrap {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  overflow-x: auto;
+  box-shadow: 0 2px 12px rgba(100,140,220,0.08);
+}
+
+/* ══ TABLE ══ */
+.app-body .status-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 640px;
+  background: #ffffff;
+}
+
+.app-body .status-table thead,
+.app-body .status-table thead tr,
+.app-body .status-table thead th {
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.app-body .status-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.app-body .status-table tbody,
+.app-body .status-table tbody tr,
+.app-body .status-table td {
+  background: #ffffff;
+}
+
+.app-body .status-table td {
+  padding: 14px 16px;
+  color: #111827;
+  vertical-align: middle;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.app-body .status-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.app-body .status-table tbody tr:hover,
+.app-body .status-table tbody tr:hover td {
+  background: #f9fafb;
+}
+
+/* ══ FOTO ══ */
+.app-body .status-table td img {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  display: block;
+}
+
+/* ══ BADGES ══ */
+.badge-ya, .badge-bukan,
+.badge-found, .badge-lost, .badge-claimed {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-ya      { background: #dcfce7; color: #16a34a; }
+.badge-bukan   { background: #fee2e2; color: #dc2626; }
+.badge-found   { background: #dcfce7; color: #16a34a; }
+.badge-lost    { background: #fee2e2; color: #dc2626; }
+.badge-claimed { background: #eff6ff; color: #2563eb; }
+
+/* ══ EDIT BUTTON ══ */
+.btn-edit-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  background: transparent;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.12s;
+  white-space: nowrap;
+}
+.btn-edit-status:hover {
+  background: #f3f4f6;
+  transform: translateY(-1px);
+}
+
+/* ══ EMPTY STATE ══ */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 5rem 2rem;
+  color: #9ca3af;
+  text-align: center;
+}
+.empty-state svg  { width: 64px; height: 64px; fill: #c3d1fa; }
+.empty-state p    { font-size: 1rem; font-weight: 600; color: #6b7280; }
+.empty-state span { font-size: 0.85rem; }
+
+/* ══ TOAST ══ */
+.toast-notif {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  padding: 13px 20px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #1e293b;
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px);
+  transition: opacity 0.25s, transform 0.25s;
+  z-index: 99999;
+}
+.toast-notif.show    { opacity: 1; pointer-events: all; transform: translateY(0); }
+.toast-notif.success { background: #16a34a; }
+.toast-notif.error   { background: #dc2626; }
+
+/* ══ RESPONSIVE ══ */
+@media (max-width: 700px) {
+  .app-body .status-table th,
+  .app-body .status-table td {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+}

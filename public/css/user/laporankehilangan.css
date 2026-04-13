@@ -1,0 +1,114 @@
+/* =============================================
+   resources/css/user/laporkehilangan.css
+   UI/UX sama dengan tambahposting.css
+   ============================================= */
+
+/* ══ FORM CARD ══ */
+.form-card {
+  background: var(--bg-card);
+  border-radius: var(--r-lg);
+  padding: 2rem 2.5rem;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-card);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* ══ FORM GROUP ══ */
+.form-group {
+  display: flex; flex-direction: column; gap: 6px;
+  margin-bottom: 1.25rem;
+}
+.form-group label {
+  font-size: 0.875rem; font-weight: 600;
+  color: var(--text-secondary);
+}
+.req { color: var(--lost); }
+
+/* ══ INPUT ══ */
+.form-control-custom {
+  padding: 10px 14px;
+  border: 1.5px solid var(--border-input);
+  border-radius: var(--r-sm);
+  font-size: 0.9rem; color: var(--text-primary);
+  background: #fff; outline: none; width: 100%;
+  transition: border-color var(--t), box-shadow var(--t);
+}
+.form-control-custom:focus {
+  border-color: var(--brand-blue);
+  box-shadow: 0 0 0 3px rgba(123,158,255,0.18);
+}
+.form-control-custom::placeholder { color: var(--text-muted); }
+
+/* ══ UPLOAD AREA ══ */
+.upload-area {
+  border: 2px dashed var(--brand-soft);
+  border-radius: var(--r-md);
+  padding: 2rem 1.5rem;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 10px;
+  cursor: pointer; position: relative;
+  background: #f9fbff;
+  transition: border-color var(--t), background var(--t);
+}
+.upload-area:hover { border-color: var(--brand-blue); background: #EEF3FF; }
+.upload-area input[type="file"] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer;
+}
+.upload-icon svg { width: 40px; height: 40px; fill: var(--lost); }
+.upload-text { text-align: center; font-size: 0.875rem; color: var(--text-secondary); }
+.upload-text strong { color: var(--lost); }
+.upload-text span { font-size: 0.78rem; color: var(--text-muted); }
+
+.preview-img {
+  display: none; margin-top: 12px;
+  width: 100%; max-height: 240px; object-fit: cover;
+  border-radius: var(--r-sm); border: 1px solid var(--border-card);
+}
+.preview-img.show { display: block; }
+
+/* ══ FORM ACTIONS ══ */
+.form-actions { display: flex; gap: 12px; margin-top: 1.5rem; }
+
+.btn-brand {
+  display: flex; align-items: center; gap: 8px;
+  padding: 11px 28px;
+  background: var(--lost); color: #fff;
+  font-size: 0.9rem; font-weight: 700;
+  border: none; border-radius: var(--r-sm);
+  cursor: pointer; transition: background var(--t), transform var(--t);
+  box-shadow: 0 3px 12px rgba(239,68,68,0.3);
+}
+.btn-brand svg { width: 18px; height: 18px; fill: currentColor; }
+.btn-brand:hover { background: #dc2626; transform: translateY(-1px); }
+
+.btn-outline-brand {
+  padding: 11px 24px;
+  background: #fff; color: var(--lost);
+  font-size: 0.9rem; font-weight: 600;
+  border: 2px solid var(--lost); border-radius: var(--r-sm);
+  cursor: pointer; transition: all var(--t);
+}
+.btn-outline-brand:hover { background: #fff5f5; }
+
+/* ══ TOAST ══ */
+.toast-notif {
+  position: fixed; bottom: 2rem; right: 2rem;
+  padding: 14px 22px; border-radius: var(--r-md);
+  font-size: 0.9rem; font-weight: 600;
+  background: var(--brand-blue-dark); color: #fff;
+  box-shadow: var(--shadow-lg);
+  opacity: 0; pointer-events: none;
+  transform: translateY(16px);
+  transition: opacity var(--t), transform var(--t);
+  z-index: 999;
+}
+.toast-notif.show { opacity: 1; pointer-events: all; transform: translateY(0); }
+.toast-notif.error { background: var(--lost); }
+.toast-notif.success { background: var(--found); }
+
+/* ══ RESPONSIVE ══ */
+@media (max-width: 700px) {
+  .form-card { padding: 1.25rem 1rem; }
+  .form-actions { flex-direction: column; }
+}
