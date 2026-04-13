@@ -1,0 +1,143 @@
+/* =============================================
+   resources/css/user/riwayatlapor.css
+   ============================================= */
+
+/* ══ TABLE WRAP ══ */
+.table-wrap {
+  background: var(--bg-card);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-card);
+  overflow: hidden;
+}
+
+/* ══ TABLE ══ */
+.lapor-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.lapor-table thead tr {
+  background: var(--lost);
+}
+
+.lapor-table thead th {
+  padding: 14px 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+.lapor-table tbody tr {
+  border-bottom: 1px solid var(--border-card);
+  transition: background var(--t);
+}
+.lapor-table tbody tr:last-child { border-bottom: none; }
+.lapor-table tbody tr:hover { background: #fff8f8; }
+
+.lapor-table tbody td {
+  padding: 14px 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+/* ══ AKSI COL ══ */
+.aksi-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-edit-row, .btn-delete-row {
+  width: 34px; height: 34px;
+  border-radius: 8px; border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background var(--t), transform var(--t);
+}
+.btn-edit-row {
+  background: #EEF3FF;
+  color: var(--brand-blue-dark);
+}
+.btn-edit-row svg { width: 15px; height: 15px; fill: currentColor; }
+.btn-edit-row:hover { background: #dbeafe; transform: scale(1.1); }
+
+.btn-delete-row {
+  background: #fff5f5;
+  color: var(--lost);
+}
+.btn-delete-row svg { width: 15px; height: 15px; fill: currentColor; }
+.btn-delete-row:hover { background: #fee2e2; transform: scale(1.1); }
+
+/* ══ EMPTY STATE ══ */
+.empty-state {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 16px; padding: 5rem 2rem;
+  color: var(--text-muted);
+}
+.empty-state svg { width: 64px; height: 64px; fill: var(--brand-soft); }
+.empty-state p { font-size: 1rem; font-weight: 500; }
+.btn-lapor {
+  padding: 10px 24px;
+  background: var(--lost); color: #fff;
+  border-radius: var(--r-sm); font-weight: 600;
+  font-size: 0.9rem; text-decoration: none;
+  transition: background var(--t);
+}
+.btn-lapor:hover { background: #dc2626; }
+
+/* ══ CONFIRM DELETE ══ */
+.confirm-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 700;
+  display: none; align-items: center; justify-content: center;
+}
+.confirm-overlay.show { display: flex; }
+.confirm-box {
+  background: #fff; border-radius: var(--r-md);
+  padding: 28px 32px; text-align: center;
+  box-shadow: var(--shadow-lg); min-width: 280px;
+}
+.confirm-box p { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 20px; }
+.confirm-actions { display: flex; gap: 12px; justify-content: center; }
+.btn-cancel {
+  padding: 9px 24px; border: 2px solid var(--border-input);
+  border-radius: var(--r-sm); background: #fff;
+  color: var(--text-secondary); font-weight: 600; cursor: pointer;
+  transition: background var(--t);
+}
+.btn-cancel:hover { background: #f3f4f6; }
+.btn-hapus {
+  padding: 9px 24px; border: none;
+  border-radius: var(--r-sm); background: var(--lost);
+  color: #fff; font-weight: 700; cursor: pointer;
+  transition: background var(--t);
+}
+.btn-hapus:hover { background: #dc2626; }
+
+/* ══ TOAST ══ */
+.toast-notif {
+  position: fixed; bottom: 2rem; right: 2rem;
+  padding: 14px 22px; border-radius: var(--r-md);
+  font-size: 0.9rem; font-weight: 600;
+  background: var(--brand-blue-dark); color: #fff;
+  box-shadow: var(--shadow-lg);
+  opacity: 0; pointer-events: none;
+  transform: translateY(16px);
+  transition: opacity var(--t), transform var(--t);
+  z-index: 999;
+}
+.toast-notif.show { opacity: 1; pointer-events: all; transform: translateY(0); }
+.toast-notif.error { background: var(--lost); }
+.toast-notif.success { background: var(--found); }
+
+/* ══ RESPONSIVE ══ */
+@media (max-width: 700px) {
+  .lapor-table thead th,
+  .lapor-table tbody td { padding: 10px 12px; font-size: 0.8rem; }
+}
