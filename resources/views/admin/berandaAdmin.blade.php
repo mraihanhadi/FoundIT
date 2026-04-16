@@ -12,6 +12,7 @@
 
   <div class="feed-tabs">
     <button class="tab-btn active" id="tabSemua" onclick="filterStatus('Semua')">Semua</button>
+    <button class="tab-btn" id="tabPending" onclick="filterStatus('Pending')">Pending</button>
     <button class="tab-btn" id="tabFound" onclick="filterStatus('Found')">Found</button>
     <button class="tab-btn" id="tabLost"  onclick="filterStatus('Lost')">Lost</button>
   </div>
@@ -261,31 +262,17 @@
       </div>
 
       {{-- tombol aksi --}}
-      <div style="display:flex; gap:10px; margin-top:4px;">
-        <button onclick="adminApprove()"
-          style="
-            flex: 1;
-            padding: 11px;
-            background: #22c55e;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.875rem;
-            cursor: pointer;
-          ">✅ Approve</button>
-        <button onclick="adminReject()"
-          style="
-            flex: 1;
-            padding: 11px;
-            background: #fff;
-            color: #ef4444;
-            border: 2px solid #ef4444;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.875rem;
-            cursor: pointer;
-          ">❌ Hapus</button>
+      <div style="display:flex; gap:10px; margin-top:4px;" id="actionButtons">
+        <form method="POST" id="formApprove" style="flex:1;">
+          @csrf
+          <button type="submit" style="width:100%; padding: 11px; background: #22c55e; color: #fff; border: none; border-radius: 8px; font-weight: 700; font-size: 0.875rem; cursor: pointer;">✅ Approve</button>
+        </form>
+        <form method="POST" id="formReject" style="flex:1;">
+          @csrf
+          <button type="submit" onclick="return confirm('Yakin ingin menghapus postingan ini?')" style="width:100%; padding: 11px; background: #fff; color: #ef4444; border: 2px solid #ef4444; border-radius: 8px; font-weight: 700; font-size: 0.875rem; cursor: pointer;">❌ Hapus</button>
+        </form>
+      </div>
+
       </div>
 
     </div>
@@ -344,10 +331,30 @@ setTimeout(squareCards, 500);
 var currentId    = null;
 var activeFilter = 'Semua';
 
+function getPostingan() {
+  return [
+    @foreach($items as $item)
+    {
+      id: {{ $item->id }},
+      nama: '{{ addslashes($item->nama_barang) }}',
+      deskripsi: '{{ addslashes($item->deskripsi_barang) }}',
+      lokasi: '{{ addslashes($item->lokasi) }}',
+      status: '{{ $item->status }}',
+      contact: '{{ addslashes($item->contact_person ?? "-") }}',
+      tanggal: '{{ \Carbon\Carbon::parse($item->tanggal)->format("d/m/Y") }}',
+      janjiTemu: '{{ addslashes($item->janji_temu ?? "-") }}',
+      foto: '{{ $item->foto ? asset("storage/" . $item->foto) : "" }}',
+      is_approved: {{ $item->is_approved ? 'true' : 'false' }},
+      username: '{{ addslashes($item->user->name ?? "User") }}'
+    },
+    @endforeach
+  ];
+}
+
 function render() {
   var grid      = document.getElementById('itemGrid');
   var empty     = document.getElementById('emptyState');
-  var postingan = JSON.parse(localStorage.getItem('postingan') || '[]');
+  var postingan = getPostingan();
   grid.innerHTML = '';
 
   if (postingan.length === 0) {
@@ -364,9 +371,13 @@ function render() {
 
   var filtered = [];
   for (var i = 0; i < postingan.length; i++) {
-    if (activeFilter === 'Semua' || postingan[i].status === activeFilter) {
-      filtered.push(postingan[i]);
-    }
+    var p = postingan[i];
+    var show = false;
+    if (activeFilter === 'Semua') show = true;
+    else if (activeFilter === 'Pending') show = !p.is_approved;
+    else show = p.status === activeFilter;
+    
+    if (show) filtered.push(p);
   }
 
   for (var j = 0; j < filtered.length; j++) {
@@ -374,12 +385,15 @@ function render() {
     var card = document.createElement('div');
     card.className      = 'item-card';
     card.dataset.status = p.status;
+    card.dataset.approved = p.is_approved ? 'true' : '';
 
     var fotoSrc     = p.foto || 'https://placehold.co/400x400/EEF3FF/7B9EFF?text=Foto';
     var statusClass = p.status.toLowerCase();
+    var pendingBadge = p.is_approved ? '' : '<span style="background:#ef4444;color:#fff;padding:2px 6px;border-radius:4px;font-size:0.7rem;position:absolute;top:8px;right:8px;z-index:2;">Pending</span>';
 
     card.innerHTML =
-      '<div class="card-img-wrap">' +
+      '<div class="card-img-wrap" style="position:relative;">' +
+        pendingBadge +
         '<img src="' + fotoSrc + '" alt="' + p.nama + '" ' +
           'onerror="this.src=\'https://placehold.co/400x400/EEF3FF/7B9EFF?text=Foto\'">' +
       '</div>' +
@@ -401,7 +415,7 @@ function render() {
 }
 
 function openPopup(id) {
-  var postingan = JSON.parse(localStorage.getItem('postingan') || '[]');
+  var postingan = getPostingan();
   var p = null;
   for (var i = 0; i < postingan.length; i++) {
     if (postingan[i].id === id) { p = postingan[i]; break; }
@@ -421,6 +435,15 @@ function openPopup(id) {
   var s = document.getElementById('popupStatus');
   s.textContent = p.status;
   s.style.color = p.status === 'Found' ? '#22c55e' : '#ef4444';
+
+  var actBtns = document.getElementById('actionButtons');
+  if (p.is_approved) {
+    actBtns.style.display = 'none';
+  } else {
+    actBtns.style.display = 'flex';
+    document.getElementById('formApprove').action = '/admin/item/' + id + '/approve';
+    document.getElementById('formReject').action = '/admin/item/' + id + '/reject';
+  }
 
   var ov = document.getElementById('popupOverlay');
   ov.style.opacity       = '1';
@@ -442,36 +465,6 @@ function handleOverlayClick(e) {
   if (e.target === document.getElementById('popupOverlay')) closePopup();
 }
 
-function adminApprove() {
-  if (!currentId) return;
-  var postingan = JSON.parse(localStorage.getItem('postingan') || '[]');
-  for (var i = 0; i < postingan.length; i++) {
-    if (postingan[i].id === currentId) {
-      postingan[i].approved = true;
-      break;
-    }
-  }
-  localStorage.setItem('postingan', JSON.stringify(postingan));
-  showToast('Postingan disetujui! Akan muncul di beranda user.', 'success');
-  closePopup();
-  render();
-}
-
-function adminReject() {
-  if (!currentId) return;
-  if (!confirm('Yakin ingin menghapus postingan ini?')) return;
-
-  var postingan = JSON.parse(localStorage.getItem('postingan') || '[]');
-  var hasil = [];
-  for (var i = 0; i < postingan.length; i++) {
-    if (postingan[i].id !== currentId) hasil.push(postingan[i]);
-  }
-  localStorage.setItem('postingan', JSON.stringify(hasil));
-  showToast('Postingan berhasil dihapus!', 'error');
-  closePopup();
-  render();
-}
-
 function filterStatus(status) {
   activeFilter = status;
 
@@ -479,7 +472,7 @@ function filterStatus(status) {
     b.classList.remove('active');
   });
 
-  var map = { Semua: 'tabSemua', Found: 'tabFound', Lost: 'tabLost' };
+  var map = { Semua: 'tabSemua', Pending: 'tabPending', Found: 'tabFound', Lost: 'tabLost' };
   var el  = document.getElementById(map[status]);
   if (el) el.classList.add('active');
 
@@ -491,7 +484,7 @@ document.getElementById('searchInput').addEventListener('input', function() {
   document.querySelectorAll('.item-card').forEach(function(card) {
     var title    = card.querySelector('.card-title').textContent.toLowerCase();
     var loc      = card.querySelector('.card-loc').textContent.toLowerCase();
-    var filterOk = activeFilter === 'Semua' || card.dataset.status === activeFilter;
+    var filterOk = activeFilter === 'Semua' || (activeFilter === 'Pending' ? !card.dataset.approved : card.dataset.status === activeFilter);
     var searchOk = !q || title.includes(q) || loc.includes(q);
     card.style.display = (filterOk && searchOk) ? '' : 'none';
   });

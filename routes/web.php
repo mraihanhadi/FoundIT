@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -112,9 +113,9 @@ Route::prefix('user')->middleware(['auth', 'role:user'])->group(function () {
    Views   : resources/views/admin/
 ══════════════════════════════════════ */
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/beranda', function () {
-        return view('admin.berandaAdmin');
-    })->name('admin.beranda');
+    Route::get('/beranda', [AdminController::class, 'beranda'])->name('admin.beranda');
+    Route::post('/item/{id}/approve', [AdminController::class, 'approve'])->name('admin.approve.postingan');
+    Route::post('/item/{id}/reject', [AdminController::class, 'reject'])->name('admin.reject.postingan');
     Route::get('/verifikasi', function () {
         return view('admin.VerifikasipenemuanAdmin');
     })->name('admin.verifikasi');

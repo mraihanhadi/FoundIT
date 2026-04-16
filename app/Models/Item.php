@@ -16,6 +16,7 @@ class Item extends Model
         'contact_person',
         'janji_temu',
         'foto',
+        'is_approved',
     ];
 
     public function user()

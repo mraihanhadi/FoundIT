@@ -11,7 +11,7 @@ class ItemController extends Controller
 {
     public function index()
     {
-        $items = Item::with('user')->orderBy('created_at', 'desc')->get();
+        $items = Item::with('user')->where('is_approved', true)->orderBy('created_at', 'desc')->get();
         return view('user.Berandauser', compact('items'));
     }
 
