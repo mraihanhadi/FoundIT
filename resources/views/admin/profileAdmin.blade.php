@@ -50,9 +50,9 @@
       <div class="profile-photo-section">
         <div class="profile-photo-wrapper">
           <img
-            src="{{ asset('gambar/' . ($user->foto ?? 'default.jpg')) }}"
-            alt="{{ $user->nama ?? 'Admin' }}"
-            onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($user->nama ?? 'Admin') }}&background=5b8dee&color=fff&size=220'"
+            src="{{ $user->foto ? asset('storage/' . $user->foto) : 'https://ui-avatars.com/api/?name='.urlencode($user->name ?? 'Admin').'&background=5b8dee&color=fff&size=220' }}"
+            alt="{{ $user->name ?? 'Admin' }}"
+            onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($user->name ?? 'Admin') }}&background=5b8dee&color=fff&size=220'"
           >
         </div>
         <span class="profile-role">Admin</span>
@@ -63,7 +63,7 @@
 
         <div class="field-group">
           <label class="field-label">Nama</label>
-          <input class="field-input" type="text" value="{{ $user->nama ?? '' }}" readonly>
+          <input class="field-input" type="text" value="{{ $user->name ?? '' }}" readonly>
         </div>
 
         <div class="field-group">

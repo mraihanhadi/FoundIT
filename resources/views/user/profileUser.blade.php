@@ -52,9 +52,9 @@
       <div class="profile-photo-section">
         <div class="profile-photo-wrapper">
           <img
-            src="{{ asset('gambar/' . ($user->foto ?? 'default.jpg')) }}"
-            alt="{{ $user->nama ?? 'User' }}"
-            onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($user->nama ?? 'user') }}&background=5b8dee&color=fff&size=220'"
+            src="{{ $user->foto ? asset('storage/' . $user->foto) : 'https://ui-avatars.com/api/?name='.urlencode($user->name ?? 'User').'&background=5b8dee&color=fff&size=220' }}"
+            alt="{{ $user->name ?? 'User' }}"
+            onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($user->name ?? 'user') }}&background=5b8dee&color=fff&size=220'"
           >
         </div>
         <span class="profile-role">Role User</span>
@@ -65,22 +65,22 @@
 
         <div class="field-group">
           <label class="field-label">Nama</label>
-          <input class="field-input" type="text" value="{{ $user->nama ?? 'Kevin Liu' }}" readonly>
+          <input class="field-input" type="text" value="{{ $user->name ?? '' }}" readonly>
         </div>
 
         <div class="field-group">
           <label class="field-label">Username</label>
-          <input class="field-input" type="text" value="{{ $user->username ?? 'KevinKece22' }}" readonly>
+          <input class="field-input" type="text" value="{{ $user->username ?? '' }}" readonly>
         </div>
 
         <div class="field-group">
           <label class="field-label">Email</label>
-          <input class="field-input" type="email" value="{{ $user->email ?? 'xxx@gmail.com' }}" readonly>
+          <input class="field-input" type="email" value="{{ $user->email ?? '' }}" readonly>
         </div>
 
         <div class="field-group">
           <label class="field-label">No Telp</label>
-          <input class="field-input" type="text" value="{{ $user->no_telp ?? '0974ss' }}" readonly>
+          <input class="field-input" type="text" value="{{ $user->no_telp ?? '' }}" readonly>
         </div>
 
         {{-- Edit Button --}}

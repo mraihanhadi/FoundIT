@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,33 +78,9 @@ Route::prefix('user')->middleware(['auth', 'role:user'])->group(function () {
         return view('user.verifikasibarangUser');
     })->name('user.verifikasi.barang');
 
-    Route::get('/profil', function () {
-        $user = (object)[
-            'nama'     => 'Kevin Liu',
-            'username' => 'KevinKece22',
-            'email'    => 'KevinLiu@gmail.com',
-            'no_telp'  => '08123456789',
-            'foto'     => null,
-            'role'     => 'User',
-        ];
-        return view('user.profileUser', compact('user'));
-    })->name('user.profil');
-
-    Route::get('/profil/edit', function () {
-        $user = (object)[
-            'nama'     => 'Kevin Liu',
-            'username' => 'KevinKece22',
-            'email'    => 'KevinLiu@gmail.com',
-            'no_telp'  => '08123456789',
-            'foto'     => null,
-            'role'     => 'User',
-        ];
-        return view('user.editprofileuser', compact('user'));
-    })->name('user.edit.profil');
-
-    Route::put('/profil/update', function () {
-        return redirect()->route('user.profil')->with('success', 'Profil berhasil diperbarui!');
-    })->name('user.update.profil');
+    Route::get('/profil', [ProfileController::class, 'show'])->name('user.profil');
+    Route::get('/profil/edit', [ProfileController::class, 'edit'])->name('user.edit.profil');
+    Route::put('/profil/update', [ProfileController::class, 'update'])->name('user.update.profil');
 
 });
 
@@ -119,32 +96,9 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/verifikasi', function () {
         return view('admin.verifikasipenemuanAdmin');
     })->name('admin.verifikasi');
-   Route::get('/setting', function () {
-    $user = (object)[
-        'nama'     => 'Admin',
-        'username' => 'admin',
-        'email'    => 'admin@foundit.ac.id',
-        'no_telp'  => '08123456789',
-        'foto'     => null,
-        'role'     => 'Admin',
-    ];
-    return view('admin.profileAdmin', compact('user'));
-})->name('admin.profil');
-Route::get('/profil/edit', function () {
-    $user = (object)[
-        'nama'     => 'Admin',
-        'username' => 'admin',
-        'email'    => 'admin@foundit.ac.id',
-        'no_telp'  => '08123456789',
-        'foto'     => null,
-        'role'     => 'Admin',
-    ];
-    return view('admin.editprofileAdmin', compact('user'));
-})->name('admin.edit.profil');
-
-Route::put('/profil/update', function () {
-    return redirect()->route('admin.profil');
-})->name('admin.update.profil');
+    Route::get('/setting', [ProfileController::class, 'show'])->name('admin.profil');
+    Route::get('/profil/edit', [ProfileController::class, 'edit'])->name('admin.edit.profil');
+    Route::put('/profil/update', [ProfileController::class, 'update'])->name('admin.update.profil');
 Route::get('/verifikasi-status', function () {
     return view('admin.verifikasistatusAdmin');
 })->name('admin.verifikasi.status');
