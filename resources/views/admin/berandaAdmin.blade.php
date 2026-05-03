@@ -3,7 +3,7 @@
 @section('title', 'Beranda Admin')
 
 @push('styles')
-  <link rel="stylesheet" href="{{ asset('css/admin/berandaAdmin.css') }}">
+  @vite('resources/css/user/beranda.css')
 @endpush
 
 @section('content')
@@ -283,50 +283,7 @@
 
 @push('scripts')
 <script>
-// biar gambar card jadi kotak
-function squareCards() {
-  document.querySelectorAll('.card-img-wrap').forEach(function(wrap) {
-    var w = wrap.getBoundingClientRect().width;
-    if (w > 0) {
-      wrap.style.setProperty('height', w + 'px', 'important');
-      wrap.style.setProperty('overflow', 'hidden', 'important');
-      var img = wrap.querySelector('img');
-      if (img) {
-        img.style.setProperty('width', '100%', 'important');
-        img.style.setProperty('height', '100%', 'important');
-        img.style.setProperty('object-fit', 'cover', 'important');
-        img.style.setProperty('display', 'block', 'important');
-        img.style.setProperty('position', 'static', 'important');
-      }
-    }
-  });
 
-  document.querySelectorAll('.item-card').forEach(function(card) {
-    card.style.setProperty('border-radius', '12px', 'important');
-    card.style.setProperty('overflow', 'hidden', 'important');
-    card.style.setProperty('box-shadow', '0 2px 8px rgba(123,158,255,0.12)', 'important');
-    card.style.setProperty('border', '1px solid rgba(0,0,0,0.07)', 'important');
-    card.style.setProperty('background', '#fff', 'important');
-  });
-
-  document.querySelectorAll('.card-status.found').forEach(function(el) {
-    el.style.setProperty('color', 'var(--found)', 'important');
-    el.style.setProperty('font-size', '0.8125rem', 'important');
-    el.style.setProperty('font-weight', '700', 'important');
-  });
-
-  document.querySelectorAll('.card-status.lost').forEach(function(el) {
-    el.style.setProperty('color', 'var(--lost)', 'important');
-    el.style.setProperty('font-size', '0.8125rem', 'important');
-    el.style.setProperty('font-weight', '700', 'important');
-  });
-}
-
-document.addEventListener('DOMContentLoaded', squareCards);
-window.addEventListener('load', squareCards);
-window.addEventListener('resize', squareCards);
-setTimeout(squareCards, 200);
-setTimeout(squareCards, 500);
 
 var currentId    = null;
 var activeFilter = 'Semua';
@@ -411,7 +368,6 @@ function render() {
     grid.appendChild(card);
   }
 
-  setTimeout(squareCards, 50);
 }
 
 function openPopup(id) {

@@ -3,8 +3,8 @@
 @section('title', 'Edit Profile')
 
 @push('styles')
-  <link rel="stylesheet" href="{{ asset('css/admin/profileAdmin.css') }}">
-  <link rel="stylesheet" href="{{ asset('css/admin/editprof.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/user/profile.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/user/editprofile.css') }}">
 @endpush
 
 @section('content')

@@ -3,7 +3,7 @@
 @section('title', 'Verifikasi Penemuan')
 
 @push('styles')
-  <link rel="stylesheet" href="{{ asset('css/admin/verifikasipenemuanAdmin.css') }}">
+  @vite('resources/css/user/beranda.css')
 @endpush
 
 @section('content')
@@ -143,42 +143,21 @@
         "
         onerror="this.style.display='none'">
 
-      <div style="display:flex; flex-direction:column; gap:8px;">
+      <div style="display:flex; flex-direction:column; gap:13px;">
         <div>
-          <label style="font-size:0.72rem; font-weight:600; color:#374151;">Nama Barang</label>
+          <label style="display: block; font-size: 0.76rem; font-weight: 600; color: #374151; margin-bottom: 5px;">Nama Barang</label>
           <div id="pNama"
-            style="
-              background: #fff;
-              border-radius: 6px;
-              padding: 8px 12px;
-              font-size: 0.85rem;
-              color: #111;
-              border: 1px solid rgba(0,0,0,0.06);
-            "></div>
+            style="background: #fff; border-radius: 8px; padding: 10px 14px; font-size: 0.875rem; color: #111; border: 1px solid rgba(0,0,0,0.06);"></div>
         </div>
         <div>
-          <label style="font-size:0.72rem; font-weight:600; color:#374151;">Deskripsi</label>
+          <label style="display: block; font-size: 0.76rem; font-weight: 600; color: #374151; margin-bottom: 5px;">Deskripsi</label>
           <div id="pDeskripsi"
-            style="
-              background: #fff;
-              border-radius: 6px;
-              padding: 8px 12px;
-              font-size: 0.85rem;
-              color: #111;
-              border: 1px solid rgba(0,0,0,0.06);
-            "></div>
+            style="background: #fff; border-radius: 8px; padding: 10px 14px; font-size: 0.875rem; color: #111; border: 1px solid rgba(0,0,0,0.06);"></div>
         </div>
         <div>
-          <label style="font-size:0.72rem; font-weight:600; color:#374151;">Lokasi Hilang</label>
+          <label style="display: block; font-size: 0.76rem; font-weight: 600; color: #374151; margin-bottom: 5px;">Lokasi Hilang</label>
           <div id="pLokasiBarang"
-            style="
-              background: #fff;
-              border-radius: 6px;
-              padding: 8px 12px;
-              font-size: 0.85rem;
-              color: #111;
-              border: 1px solid rgba(0,0,0,0.06);
-            "></div>
+            style="background: #fff; border-radius: 8px; padding: 10px 14px; font-size: 0.875rem; color: #111; border: 1px solid rgba(0,0,0,0.06);"></div>
         </div>
       </div>
     </div>
@@ -201,42 +180,21 @@
         "
         onerror="this.style.display='none'">
 
-      <div style="display:flex; flex-direction:column; gap:8px;">
+      <div style="display:flex; flex-direction:column; gap:13px;">
         <div>
-          <label style="font-size:0.72rem; font-weight:600; color:#374151;">No. Telepon Penemu</label>
+          <label style="display: block; font-size: 0.76rem; font-weight: 600; color: #374151; margin-bottom: 5px;">No. Telepon Penemu</label>
           <div id="pNoTelp"
-            style="
-              background: #fff;
-              border-radius: 6px;
-              padding: 8px 12px;
-              font-size: 0.85rem;
-              color: #111;
-              border: 1px solid rgba(0,0,0,0.06);
-            "></div>
+            style="background: #fff; border-radius: 8px; padding: 10px 14px; font-size: 0.875rem; color: #111; border: 1px solid rgba(0,0,0,0.06);"></div>
         </div>
         <div>
-          <label style="font-size:0.72rem; font-weight:600; color:#374151;">📍 Lokasi Pengambilan</label>
+          <label style="display: block; font-size: 0.76rem; font-weight: 600; color: #374151; margin-bottom: 5px;">📍 Lokasi Pengambilan</label>
           <div id="pLokasiAmbil"
-            style="
-              background: #fff;
-              border-radius: 6px;
-              padding: 8px 12px;
-              font-size: 0.85rem;
-              color: #111;
-              border: 1px solid rgba(0,0,0,0.06);
-            "></div>
+            style="background: #fff; border-radius: 8px; padding: 10px 14px; font-size: 0.875rem; color: #111; border: 1px solid rgba(0,0,0,0.06);"></div>
         </div>
         <div>
-          <label style="font-size:0.72rem; font-weight:600; color:#374151;">📅 Janji Temu</label>
+          <label style="display: block; font-size: 0.76rem; font-weight: 600; color: #374151; margin-bottom: 5px;">📅 Janji Temu</label>
           <div id="pJanji"
-            style="
-              background: #fff;
-              border-radius: 6px;
-              padding: 8px 12px;
-              font-size: 0.85rem;
-              color: #111;
-              border: 1px solid rgba(0,0,0,0.06);
-            "></div>
+            style="background: #fff; border-radius: 8px; padding: 10px 14px; font-size: 0.875rem; color: #111; border: 1px solid rgba(0,0,0,0.06);"></div>
         </div>
       </div>
     </div>
@@ -276,38 +234,7 @@
 
 @push('scripts')
 <script>
-// biar gambar card jadi kotak
-function squareCards() {
-  document.querySelectorAll('.card-img-wrap').forEach(function(wrap) {
-    var w = wrap.getBoundingClientRect().width;
-    if (w > 0) {
-      wrap.style.setProperty('height', w + 'px', 'important');
-      wrap.style.setProperty('overflow', 'hidden', 'important');
-      var img = wrap.querySelector('img');
-      if (img) {
-        img.style.setProperty('width', '100%', 'important');
-        img.style.setProperty('height', '100%', 'important');
-        img.style.setProperty('object-fit', 'cover', 'important');
-        img.style.setProperty('display', 'block', 'important');
-        img.style.setProperty('position', 'static', 'important');
-      }
-    }
-  });
 
-  document.querySelectorAll('.item-card').forEach(function(card) {
-    card.style.setProperty('border-radius', '12px', 'important');
-    card.style.setProperty('overflow', 'hidden', 'important');
-    card.style.setProperty('box-shadow', '0 2px 8px rgba(123,158,255,0.12)', 'important');
-    card.style.setProperty('border', '1px solid rgba(0,0,0,0.07)', 'important');
-    card.style.setProperty('background', '#fff', 'important');
-  });
-}
-
-document.addEventListener('DOMContentLoaded', squareCards);
-window.addEventListener('load', squareCards);
-window.addEventListener('resize', squareCards);
-setTimeout(squareCards, 200);
-setTimeout(squareCards, 500);
 
 var verifikasi = [];
 var currentId  = null;
@@ -356,7 +283,6 @@ function render() {
     grid.appendChild(card);
   }
 
-  setTimeout(squareCards, 50);
 }
 
 function openPopup(id) {
