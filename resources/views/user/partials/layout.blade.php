@@ -15,11 +15,11 @@
 <!-- SLIDE MENU -->
 <nav class="drawer" id="drawer">
   <div class="drawer-header">
-    <img src="{{ asset('gambar/kevin.jpg') }}" alt="Kevin" class="drawer-avatar"
-         onerror="this.src='https://ui-avatars.com/api/?name=Kevin+Liu&background=7B9EFF&color=fff'">
+    <img src="{{ Auth::user()->foto ? asset('storage/' . Auth::user()->foto) : 'https://ui-avatars.com/api/?name='.urlencode(Auth::user()->name).'&background=7B9EFF&color=fff' }}" alt="{{ Auth::user()->name }}" class="drawer-avatar"
+         onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=7B9EFF&color=fff'">
     <div>
-      <div class="drawer-user-name">Kevin Liu</div>
-      <div class="drawer-user-email">KevinLiu@gmail.com</div>
+      <div class="drawer-user-name">{{ Auth::user()->name }}</div>
+      <div class="drawer-user-email">{{ Auth::user()->email }}</div>
     </div>
   </div>
 
@@ -91,13 +91,13 @@
 
   <div class="header-profile">
     <button class="profile-btn" onclick="toggleProfileDropdown()">
-      <img src="{{ asset('gambar/kevin.jpg') }}" alt="Kevin" class="profile-avatar"
-           onerror="this.src='https://ui-avatars.com/api/?name=K&background=7B9EFF&color=fff'">
+      <img src="{{ Auth::user()->foto ? asset('storage/' . Auth::user()->foto) : 'https://ui-avatars.com/api/?name='.urlencode(Auth::user()->name).'&background=7B9EFF&color=fff' }}" alt="{{ Auth::user()->name }}" class="profile-avatar"
+           onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=7B9EFF&color=fff'">
     </button>
     <div class="profile-dropdown" id="profileDropdown">
       <div class="dropdown-info">
-        <div class="d-name">Kevin Liu</div>
-        <div class="d-email">KevinLiu@gmail.com</div>
+        <div class="d-name">{{ Auth::user()->name }}</div>
+        <div class="d-email">{{ Auth::user()->email }}</div>
       </div>
       <a class="dropdown-item" href="{{ route('user.profil') }}">
         <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
