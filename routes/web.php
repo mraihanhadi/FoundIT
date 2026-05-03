@@ -117,7 +117,7 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/item/{id}/approve', [AdminController::class, 'approve'])->name('admin.approve.postingan');
     Route::post('/item/{id}/reject', [AdminController::class, 'reject'])->name('admin.reject.postingan');
     Route::get('/verifikasi', function () {
-        return view('admin.VerifikasipenemuanAdmin');
+        return view('admin.verifikasipenemuanAdmin');
     })->name('admin.verifikasi');
    Route::get('/setting', function () {
     $user = (object)[
