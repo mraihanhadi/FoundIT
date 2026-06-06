@@ -19,10 +19,7 @@
     <a href="{{ route('user.tambah.posting') }}" class="sidebar-icon-btn {{ in_array($active??'',['tambah-posting','riwayat-posting']) ? 'active' : '' }}" title="Tambah Postingan">
       <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
     </a>
-    <a href="{{ route('user.lapor.kehilangan') }}" class="sidebar-icon-btn {{ in_array($active??'',['lapor','riwayat-lapor']) ? 'active' : '' }}" title="Laporan Kehilangan">
-      <svg viewBox="0 0 24 24">
-        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-    </a>
+
     <a href="{{ route('user.notifikasi') }}" class="sidebar-icon-btn {{ ($active??'')==='notifikasi' ? 'active' : '' }}" title="Notifikasi">
       <svg viewBox="0 0 24 24">
         <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
@@ -52,12 +49,12 @@
       <div class="profile-photo-section">
         <div class="profile-photo-wrapper">
           <img
-            src="{{ asset('gambar/' . ($user->foto ?? 'default.jpg')) }}"
-            alt="{{ $user->nama ?? 'User' }}"
-            onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($user->nama ?? 'user') }}&background=5b8dee&color=fff&size=220'"
+            src="{{ $user->foto ? asset('storage/' . $user->foto) : 'https://ui-avatars.com/api/?name='.urlencode($user->name).'&background=5b8dee&color=fff&size=220' }}"
+            alt="{{ $user->name }}"
+            onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=5b8dee&color=fff&size=220'"
           >
         </div>
-        <span class="profile-role">Role User</span>
+        <span class="profile-role">Role {{ ucfirst($user->role) }}</span>
       </div>
 
       {{-- Fields Section --}}
@@ -65,22 +62,22 @@
 
         <div class="field-group">
           <label class="field-label">Nama</label>
-          <input class="field-input" type="text" value="{{ $user->nama ?? 'Kevin Liu' }}" readonly>
+          <input class="field-input" type="text" value="{{ $user->name }}" readonly>
         </div>
 
         <div class="field-group">
           <label class="field-label">Username</label>
-          <input class="field-input" type="text" value="{{ $user->username ?? 'KevinKece22' }}" readonly>
+          <input class="field-input" type="text" value="{{ $user->username }}" readonly>
         </div>
 
         <div class="field-group">
           <label class="field-label">Email</label>
-          <input class="field-input" type="email" value="{{ $user->email ?? 'xxx@gmail.com' }}" readonly>
+          <input class="field-input" type="email" value="{{ $user->email }}" readonly>
         </div>
 
         <div class="field-group">
           <label class="field-label">No Telp</label>
-          <input class="field-input" type="text" value="{{ $user->no_telp ?? '0974ss' }}" readonly>
+          <input class="field-input" type="text" value="{{ $user->no_telp ?? '-' }}" readonly>
         </div>
 
         {{-- Edit Button --}}
@@ -89,6 +86,8 @@
         </div>
 
       </div>
+
+
     </div>
 
   </main>

@@ -40,4 +40,35 @@ class ItemController extends Controller
 
         return redirect()->route('user.riwayat.posting')->with('success', 'Postingan berhasil ditambahkan!');
     }
+
+    public function history()
+    {
+        $items = Item::where('user_id', Auth::id())->orderBy('created_at', 'desc')->get();
+        
+        $postinganData = $items->map(function($item) {
+            return [
+                'id' => $item->id,
+                'nama' => $item->nama_barang,
+                'deskripsi' => $item->deskripsi_barang,
+                'lokasi' => $item->lokasi,
+                'status' => $item->status,
+                'tanggal' => $item->tanggal,
+                'contactPerson' => $item->contact_person,
+                'foto' => $item->foto ? asset('storage/'.$item->foto) : null,
+            ];
+        });
+
+        return view('user.riwayatpostinganUser', compact('postinganData'));
+    }
+
+    public function destroy($id)
+    {
+        $item = Item::where('id', $id)->where('user_id', Auth::id())->first();
+        if (!$item) {
+            return response()->json(['success' => false, 'message' => 'Item not found or unauthorized'], 404);
+        }
+
+        $item->delete();
+        return response()->json(['success' => true, 'message' => 'Postingan berhasil dihapus']);
+    }
 }

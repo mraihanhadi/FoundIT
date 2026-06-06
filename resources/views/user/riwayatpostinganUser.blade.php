@@ -115,11 +115,10 @@
 
 @push('scripts')
 <script>
-var postingan = [];
+var postingan = @json($postinganData);
 var deleteId  = null;
 
 function loadPostingan() {
-  postingan = JSON.parse(localStorage.getItem('postingan') || '[]');
 
   var grid  = document.getElementById('itemGrid');
   var empty = document.getElementById('emptyState');
@@ -223,16 +222,29 @@ function closeConfirm() {
 document.getElementById('btnHapusConfirm').addEventListener('click', function() {
   if (!deleteId) return;
 
-  var hasil = [];
-  for (var i = 0; i < postingan.length; i++) {
-    if (postingan[i].id !== deleteId) hasil.push(postingan[i]);
-  }
-  postingan = hasil;
-
-  localStorage.setItem('postingan', JSON.stringify(postingan));
-  closeConfirm();
-  showToast('Postingan berhasil dihapus!', 'success');
-  loadPostingan();
+  fetch('{{ route("user.item.destroy", ":id") }}'.replace(':id', deleteId), {
+      method: 'DELETE',
+      headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': '{{ csrf_token() }}'
+      }
+  })
+  .then(res => res.json())
+  .then(data => {
+      if(data.success) {
+          showToast(data.message, 'success');
+          closeConfirm();
+          setTimeout(() => location.reload(), 1000);
+      } else {
+          showToast(data.message, 'error');
+          closeConfirm();
+      }
+  })
+  .catch(err => {
+      console.error(err);
+      showToast('Terjadi kesalahan', 'error');
+      closeConfirm();
+  });
 });
 
 function showToast(msg, type) {

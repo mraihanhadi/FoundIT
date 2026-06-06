@@ -107,12 +107,10 @@
 
 @push('scripts')
 <script>
-var notifData = [];
+var notifData = @json($notifikasiData);
 var currentId = null;
 
 function render() {
-  notifData = JSON.parse(localStorage.getItem('notifikasiUser') || '[]');
-
   var grid  = document.getElementById('notifGrid');
   var empty = document.getElementById('emptyState');
   grid.innerHTML = '';
@@ -127,16 +125,16 @@ function render() {
     var n = notifData[i];
     var badge = '';
 
-    if (n.status === 'confirmed') {
+    if (n.status === 'claimed') {
       badge = '<span class="notif-badge confirmed">✅ Dikonfirmasi</span>';
-    } else if (n.status === 'rejected') {
+    } else if (n.status === 'invalid') {
       badge = '<span class="notif-badge rejected">❌ Ditolak</span>';
     } else {
       badge = '<span class="notif-badge new">🔔 Barang Ditemukan!</span>';
     }
 
     var card = document.createElement('div');
-    card.className = 'item-card notif-card' + (n.status !== 'pending' ? ' notif-done' : '');
+    card.className = 'item-card notif-card' + (n.status !== 'approved' ? ' notif-done' : '');
 
     // pakai closure biar id-nya ga ketukar
     (function(id) {
@@ -192,48 +190,24 @@ function handleOverlayClick(e) {
 function konfirmasi(isYa) {
   if (!currentId) return;
 
-  var idx = -1;
-  for (var i = 0; i < notifData.length; i++) {
-    if (notifData[i].id === currentId) { idx = i; break; }
-  }
-  if (idx === -1) return;
+  var status = isYa ? 'claimed' : 'invalid';
 
-  notifData[idx].status     = isYa ? 'confirmed' : 'rejected';
-  notifData[idx].responUser = isYa ? 'ya' : 'bukan';
-  localStorage.setItem('notifikasiUser', JSON.stringify(notifData));
-
-  // update ke verifikasiStatus buat admin
-  var n = notifData[idx];
-  var statusList = JSON.parse(localStorage.getItem('verifikasiStatus') || '[]');
-
-  var existIdx = -1;
-  for (var j = 0; j < statusList.length; j++) {
-    if (statusList[j].id === n.id) { existIdx = j; break; }
-  }
-
-  var entry = {
-    id:          n.id,
-    nama:        n.nama,
-    deskripsi:   n.deskripsi,
-    foto:        n.foto,
-    lokasiAmbil: n.lokasiAmbil,
-    janji:       n.janji,
-    nomor:       n.nomor,
-    waktu:       n.waktu,
-    responUser:  isYa ? 'ya' : 'bukan',
-    status:      isYa ? 'Claimed' : 'Lost'
-  };
-
-  if (existIdx !== -1) {
-    statusList[existIdx] = entry;
-  } else {
-    statusList.unshift(entry);
-  }
-  localStorage.setItem('verifikasiStatus', JSON.stringify(statusList));
-
-  closePopup();
-  showToast(isYa ? 'Konfirmasi berhasil dikirim!' : 'Ditandai bukan barang kamu.', 'success');
-  render();
+  fetch('{{ route("user.verifikasi.status", ":id") }}'.replace(':id', currentId), {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': '{{ csrf_token() }}'
+      },
+      body: JSON.stringify({ status: status })
+  })
+  .then(res => res.json())
+  .then(data => {
+      if(data.success) {
+          showToast(data.message, 'success');
+          closePopup();
+          setTimeout(() => location.reload(), 1000);
+      }
+  });
 }
 
 function showToast(msg, type) {

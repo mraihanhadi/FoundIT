@@ -30,7 +30,7 @@
       </div>
     </div>
     @empty
-      <div style="text-align:center;width:100%;padding:20px;color:#888;">Belum ada postingan barang.</div>
+      <div style="grid-column: 1 / -1; text-align: center; width: 100%; padding: 40px 20px; color: #888;">Belum ada postingan barang.</div>
     @endforelse
 
   </div>
@@ -85,6 +85,11 @@
       {{-- khusus status lost --}}
       <div id="popupFoundItBtn" style="display:none; margin-top:4px;">
         <button onclick="openVerifikasi()" class="btn-found-it">📞 Found It!</button>
+      </div>
+
+      {{-- khusus owner lost --}}
+      <div id="popupOwnerFoundBtn" style="display:none; margin-top:4px;">
+        <button onclick="ownerAlreadyFound()" class="btn-found-it" style="background-color: #28a745;">✅ Already Found</button>
       </div>
     </div>
 
@@ -163,7 +168,10 @@ var itemData = {
     lokasi: '{{ addslashes($item->lokasi) }}',
     status: '{{ $item->status }}',
     tanggal: '{{ \Carbon\Carbon::parse($item->tanggal)->format("d/m/Y") }}',
-    lokasiAmbil: '{{ addslashes($item->janji_temu ?? "") }}'
+    lokasiAmbil: '{{ addslashes($item->janji_temu ?? "") }}',
+    userId: '{{ $item->user_id }}',
+    itemId: '{{ $item->id }}',
+    isOwner: {{ $item->user_id == \Illuminate\Support\Facades\Auth::id() ? 'true' : 'false' }}
   },
 @endforeach
 };
@@ -174,10 +182,10 @@ function openPopup(key) {
   var d = itemData[key];
   if (!d) return;
   currentPopupData = d;
-  _showPopup(d.avatar, d.username, d.itemImg, d.nama, d.deskripsi, d.lokasi, d.tanggal, d.status, d.lokasiAmbil);
+  _showPopup(d.avatar, d.username, d.itemImg, d.nama, d.deskripsi, d.lokasi, d.tanggal, d.status, d.lokasiAmbil, d.isOwner);
 }
 
-function _showPopup(avatar, username, itemImg, nama, deskripsi, lokasi, tanggal, status, lokasiAmbil) {
+function _showPopup(avatar, username, itemImg, nama, deskripsi, lokasi, tanggal, status, lokasiAmbil, isOwner) {
   document.getElementById('popupUserAvatar').src       = avatar;
   document.getElementById('popupUsername').textContent = username;
   document.getElementById('popupItemImg').src          = itemImg;
@@ -193,10 +201,17 @@ function _showPopup(avatar, username, itemImg, nama, deskripsi, lokasi, tanggal,
   if (status === 'Found') {
     document.getElementById('popupJanjiFound').style.display = 'block';
     document.getElementById('popupFoundItBtn').style.display = 'none';
+    document.getElementById('popupOwnerFoundBtn').style.display = 'none';
     document.getElementById('popupLokasiFound').textContent  = lokasiAmbil || '-';
   } else {
     document.getElementById('popupJanjiFound').style.display = 'none';
-    document.getElementById('popupFoundItBtn').style.display = 'block';
+    if (isOwner) {
+      document.getElementById('popupFoundItBtn').style.display = 'none';
+      document.getElementById('popupOwnerFoundBtn').style.display = 'block';
+    } else {
+      document.getElementById('popupFoundItBtn').style.display = 'block';
+      document.getElementById('popupOwnerFoundBtn').style.display = 'none';
+    }
   }
 
   document.getElementById('popupOverlay').classList.add('show');
@@ -212,6 +227,25 @@ function closePopup() {
 
 function handleOverlayClick(e) {
   if (e.target === document.getElementById('popupOverlay')) closePopup();
+}
+
+function ownerAlreadyFound() {
+  if(!currentPopupData) return;
+  fetch('{{ url("user/item") }}/' + currentPopupData.itemId, {
+      method: 'DELETE',
+      headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': '{{ csrf_token() }}'
+      }
+  })
+  .then(res => res.json())
+  .then(data => {
+      if(data.success) {
+          showToast('Item berhasil dihapus dari beranda', 'success');
+          closePopup();
+          setTimeout(() => location.reload(), 1000);
+      }
+  });
 }
 
 function openVerifikasi() {
@@ -256,8 +290,10 @@ function kirimVerifikasi() {
   var jam     = document.getElementById('verifJam').value;
   var foto    = document.getElementById('verifPreviewImg');
 
-  // validasi dulu
-  if (!foto.classList.contains('show')) {
+  var inputFoto = document.querySelector('.verif-upload-area input[type="file"]');
+  var file = inputFoto.files[0];
+
+  if (!file) {
     showToast('Foto bukti wajib diupload!', 'error');
     return;
   }
@@ -274,29 +310,43 @@ function kirimVerifikasi() {
     return;
   }
 
-  // simpan ke localStorage buat admin
-  var verifikasi = JSON.parse(localStorage.getItem('verifikasiAdmin') || '[]');
-  verifikasi.unshift({
-    id: Date.now(),
-    namaBarang:      currentPopupData ? currentPopupData.nama      : '-',
-    deskripsiBarang: currentPopupData ? currentPopupData.deskripsi : '-',
-    lokasiBarang:    currentPopupData ? currentPopupData.lokasi    : '-',
-    tanggalBarang:   currentPopupData ? currentPopupData.tanggal   : '-',
-    fotoBarang:      currentPopupData ? currentPopupData.itemImg   : null,
-    fotoVerif:       foto.src,
-    noTelp:          noTelp,
-    lokasiAmbil:     lokasi,
-    janjiTemu:       tanggal + ' ' + jam,
-    waktu:           new Date().toLocaleDateString('id-ID'),
-    status:          'pending'
-  });
-  localStorage.setItem('verifikasiAdmin', JSON.stringify(verifikasi));
+  var formData = new FormData();
+  formData.append('item_id', currentPopupData ? currentPopupData.itemId : '');
+  formData.append('foto_bukti', file);
+  formData.append('no_telp', noTelp);
+  formData.append('lokasi_ambil', lokasi);
+  formData.append('janji_temu', tanggal + ' ' + jam);
+  formData.append('_token', '{{ csrf_token() }}');
 
-  showToast('Verifikasi berhasil dikirim ke Admin!', 'success');
-  setTimeout(function() {
-    document.getElementById('verifikasiOverlay').classList.remove('show');
-    document.body.style.overflow = '';
-  }, 1500);
+  var btn = document.querySelector('.btn-found-it[onclick="kirimVerifikasi()"]');
+  var oldText = btn.innerHTML;
+  btn.innerHTML = '⏳ Mengirim...';
+  btn.disabled = true;
+
+  fetch('{{ route("user.verifikasi.store") }}', {
+      method: 'POST',
+      body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+      if(data.success) {
+          showToast(data.message, 'success');
+          setTimeout(function() {
+            document.getElementById('verifikasiOverlay').classList.remove('show');
+            document.body.style.overflow = '';
+          }, 1500);
+      } else {
+          showToast('Terjadi kesalahan!', 'error');
+      }
+  })
+  .catch(err => {
+      console.error(err);
+      showToast('Gagal mengirim data!', 'error');
+  })
+  .finally(() => {
+      btn.innerHTML = oldText;
+      btn.disabled = false;
+  });
 }
 
 // search

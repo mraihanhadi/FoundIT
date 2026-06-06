@@ -236,12 +236,10 @@
 <script>
 
 
-var verifikasi = [];
+var verifikasi = @json($verificationsData);
 var currentId  = null;
 
 function render() {
-  verifikasi = JSON.parse(localStorage.getItem('verifikasiAdmin') || '[]');
-
   var grid  = document.getElementById('itemGrid');
   var empty = document.getElementById('emptyState');
   grid.innerHTML = '';
@@ -325,53 +323,40 @@ function handleOverlayClick(e) {
 function adminKirim() {
   if (!currentId) return;
 
-  var v = null;
-  for (var i = 0; i < verifikasi.length; i++) {
-    if (verifikasi[i].id === currentId) { v = verifikasi[i]; break; }
-  }
-
-  if (v) {
-    // kirim ke notifikasi user
-    var notif = JSON.parse(localStorage.getItem('notifikasiUser') || '[]');
-    notif.unshift({
-      id:          Date.now(),
-      nama:        v.namaBarang,
-      deskripsi:   v.deskripsiBarang,
-      foto:        v.fotoVerif,
-      nomor:       v.noTelp,
-      lokasiAmbil: v.lokasiAmbil,
-      janji:       v.janjiTemu,
-      waktu:       v.waktu,
-      status:      'pending'
-    });
-    localStorage.setItem('notifikasiUser', JSON.stringify(notif));
-
-    // hapus dari verifikasiAdmin
-    var updated = [];
-    for (var j = 0; j < verifikasi.length; j++) {
-      if (verifikasi[j].id !== currentId) updated.push(verifikasi[j]);
-    }
-    localStorage.setItem('verifikasiAdmin', JSON.stringify(updated));
-  }
-
-  showToast('Verifikasi berhasil dikirim ke user!', 'success');
-  closePopup();
-  render();
+  fetch('{{ route("admin.approve.verifikasi", ":id") }}'.replace(':id', currentId), {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': '{{ csrf_token() }}'
+      }
+  })
+  .then(res => res.json())
+  .then(data => {
+      if(data.success) {
+          showToast(data.message, 'success');
+          setTimeout(() => location.reload(), 1000);
+      }
+  });
 }
 
 function adminHapus() {
   if (!currentId) return;
   if (!confirm('Yakin ingin menghapus verifikasi ini?')) return;
 
-  var updated = [];
-  for (var i = 0; i < verifikasi.length; i++) {
-    if (verifikasi[i].id !== currentId) updated.push(verifikasi[i]);
-  }
-  localStorage.setItem('verifikasiAdmin', JSON.stringify(updated));
-
-  showToast('Verifikasi dihapus!', 'error');
-  closePopup();
-  render();
+  fetch('{{ route("admin.reject.verifikasi", ":id") }}'.replace(':id', currentId), {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': '{{ csrf_token() }}'
+      }
+  })
+  .then(res => res.json())
+  .then(data => {
+      if(data.success) {
+          showToast(data.message, 'success');
+          setTimeout(() => location.reload(), 1000);
+      }
+  });
 }
 
 document.getElementById('searchInput').addEventListener('input', function() {

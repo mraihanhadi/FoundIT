@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\VerificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,9 +46,8 @@ Route::prefix('user')->middleware(['auth', 'role:user'])->group(function () {
     })->name('user.tambah.posting');
     Route::post('/tambah-posting', [ItemController::class, 'store'])->name('user.tambah.posting.post');
 
-    Route::get('/riwayat-posting', function () {
-        return view('user.riwayatpostinganUser');
-    })->name('user.riwayat.posting');
+    Route::get('/riwayat-posting', [\App\Http\Controllers\ItemController::class, 'history'])->name('user.riwayat.posting');
+    Route::delete('/item/{id}', [\App\Http\Controllers\ItemController::class, 'destroy'])->name('user.item.destroy');
 
     Route::get('/edit-posting', function () {
         return view('user.editpostingUser');
@@ -70,34 +70,44 @@ Route::prefix('user')->middleware(['auth', 'role:user'])->group(function () {
     })->name('user.edit.lapor');
 
     Route::get('/notifikasi', function () {
-        return view('user.notifikasiUser');
+        $notifikasis = \App\Models\ItemVerification::with('item')
+            ->whereHas('item', function($q) {
+                $q->where('user_id', \Illuminate\Support\Facades\Auth::id());
+            })
+            ->whereIn('status', ['approved', 'claimed', 'invalid'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+            
+        $notifikasiData = $notifikasis->map(function($v) {
+            return [
+                'id' => $v->id,
+                'nama' => $v->item->nama_barang ?? '-',
+                'deskripsi' => $v->item->deskripsi_barang ?? '-',
+                'foto' => asset('storage/'.$v->foto_bukti),
+                'nomor' => $v->no_telp,
+                'lokasiAmbil' => $v->lokasi_ambil,
+                'janji' => $v->janji_temu,
+                'waktu' => $v->created_at->format('d/m/Y'),
+                'status' => $v->status,
+            ];
+        });
+        return view('user.notifikasiUser', compact('notifikasiData'));
     })->name('user.notifikasi');
 
     Route::get('/verifikasi-barang', function () {
         return view('user.verifikasibarangUser');
     })->name('user.verifikasi.barang');
 
+    Route::post('/verifikasi', [VerificationController::class, 'store'])->name('user.verifikasi.store');
+    Route::post('/verifikasi/{id}/status', [VerificationController::class, 'updateStatus'])->name('user.verifikasi.status');
+
     Route::get('/profil', function () {
-        $user = (object)[
-            'nama'     => 'Kevin Liu',
-            'username' => 'KevinKece22',
-            'email'    => 'KevinLiu@gmail.com',
-            'no_telp'  => '08123456789',
-            'foto'     => null,
-            'role'     => 'User',
-        ];
+        $user = \Illuminate\Support\Facades\Auth::user();
         return view('user.profileUser', compact('user'));
     })->name('user.profil');
 
     Route::get('/profil/edit', function () {
-        $user = (object)[
-            'nama'     => 'Kevin Liu',
-            'username' => 'KevinKece22',
-            'email'    => 'KevinLiu@gmail.com',
-            'no_telp'  => '08123456789',
-            'foto'     => null,
-            'role'     => 'User',
-        ];
+        $user = \Illuminate\Support\Facades\Auth::user();
         return view('user.editprofileuser', compact('user'));
     })->name('user.edit.profil');
 
@@ -116,29 +126,16 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/beranda', [AdminController::class, 'beranda'])->name('admin.beranda');
     Route::post('/item/{id}/approve', [AdminController::class, 'approve'])->name('admin.approve.postingan');
     Route::post('/item/{id}/reject', [AdminController::class, 'reject'])->name('admin.reject.postingan');
-    Route::get('/verifikasi', function () {
-        return view('admin.verifikasipenemuanAdmin');
-    })->name('admin.verifikasi');
+    Route::get('/verifikasi', [AdminController::class, 'verifikasi'])->name('admin.verifikasi');
+    Route::post('/verifikasi/{id}/approve', [AdminController::class, 'approveVerification'])->name('admin.approve.verifikasi');
+    Route::post('/verifikasi/{id}/reject', [AdminController::class, 'rejectVerification'])->name('admin.reject.verifikasi');
+
    Route::get('/setting', function () {
-    $user = (object)[
-        'nama'     => 'Admin',
-        'username' => 'admin',
-        'email'    => 'admin@foundit.ac.id',
-        'no_telp'  => '08123456789',
-        'foto'     => null,
-        'role'     => 'Admin',
-    ];
-    return view('admin.profileAdmin', compact('user'));
-})->name('admin.profil');
+       $user = \Illuminate\Support\Facades\Auth::user();
+       return view('admin.profileAdmin', compact('user'));
+   })->name('admin.profil');
 Route::get('/profil/edit', function () {
-    $user = (object)[
-        'nama'     => 'Admin',
-        'username' => 'admin',
-        'email'    => 'admin@foundit.ac.id',
-        'no_telp'  => '08123456789',
-        'foto'     => null,
-        'role'     => 'Admin',
-    ];
+    $user = \Illuminate\Support\Facades\Auth::user();
     return view('admin.editprofileAdmin', compact('user'));
 })->name('admin.edit.profil');
 
@@ -152,5 +149,6 @@ Route::get('/tambah-posting', function () {
     return view('admin.tambahpostingAdmin');
 })->name('admin.tambah.posting');
 });
+
 /* ── LOGOUT ── */
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');

@@ -31,4 +31,42 @@ class AdminController extends Controller
 
         return redirect()->route('admin.beranda')->with('error', 'Postingan berhasil dihapus!');
     }
+
+    public function verifikasi()
+    {
+        $verifications = \App\Models\ItemVerification::with('item')->where('status', 'pending')->orderBy('created_at', 'desc')->get();
+        $verificationsData = $verifications->map(function($v) {
+            return [
+                'id' => $v->id,
+                'namaBarang' => $v->item->nama_barang ?? '-',
+                'deskripsiBarang' => $v->item->deskripsi_barang ?? '-',
+                'lokasiBarang' => $v->item->lokasi ?? '-',
+                'fotoBarang' => $v->item && $v->item->foto ? asset('storage/'.$v->item->foto) : null,
+                'fotoVerif' => asset('storage/'.$v->foto_bukti),
+                'noTelp' => $v->no_telp,
+                'lokasiAmbil' => $v->lokasi_ambil,
+                'janjiTemu' => $v->janji_temu,
+                'userId' => $v->item->user_id ?? null,
+            ];
+        });
+        return view('admin.verifikasipenemuanAdmin', compact('verificationsData'));
+    }
+
+    public function approveVerification($id)
+    {
+        $verification = \App\Models\ItemVerification::findOrFail($id);
+        $verification->status = 'approved';
+        $verification->save();
+
+        return response()->json(['success' => true, 'message' => 'Verifikasi berhasil dikirim ke user!']);
+    }
+
+    public function rejectVerification($id)
+    {
+        $verification = \App\Models\ItemVerification::findOrFail($id);
+        $verification->status = 'rejected';
+        $verification->save();
+
+        return response()->json(['success' => true, 'message' => 'Verifikasi dihapus!']);
+    }
 }
