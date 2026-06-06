@@ -1,58 +1,97 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# FoundIT
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+FoundIT adalah sebuah aplikasi berbasis web (*Lost and Found*) yang dirancang untuk mempermudah pengguna dalam melaporkan barang yang hilang maupun barang yang ditemukan. 
 
-## About Laravel
+Aplikasi ini menjadi jembatan antara penemu barang dan pemilik barang yang kehilangan dengan menyediakan fitur verifikasi yang aman dan terstruktur yang dikelola oleh Admin.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📌 Fitur Utama
+1. **Lapor Kehilangan**: Pengguna dapat memposting informasi barang yang hilang (foto, deskripsi, lokasi).
+2. **Lapor Penemuan**: Pengguna dapat memposting barang yang ditemukan.
+3. **Sistem Verifikasi (Admin)**: Admin bertugas memverifikasi klaim barang sebelum mempertemukan penemu dan pemilik.
+4. **Notifikasi Interaktif**: Pemilik barang akan mendapatkan notifikasi jika barangnya diduga ditemukan dan bisa mengonfirmasi apakah itu benar barangnya atau bukan.
+5. **Riwayat Postingan**: Pengguna dapat melihat, mengedit, dan menghapus riwayat barang yang telah mereka laporkan.
+6. **Manajemen Profil**: Pengguna dan Admin dapat mengubah data profil secara dinamis, termasuk mengunggah foto profil baru.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 💻 Persyaratan Sistem (System Requirements)
+Sebelum menjalankan aplikasi ini, pastikan komputer Anda telah menginstal perangkat lunak berikut:
+- **PHP** (minimal versi 8.1 atau lebih baru)
+- **Composer** (Dependency manager untuk PHP)
+- **MySQL** / MariaDB (Bisa menggunakan XAMPP, Laragon, dll.)
+- **Git**
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🚀 Cara Instalasi dan Menjalankan Aplikasi
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Ikuti langkah-langkah di bawah ini untuk menjalankan aplikasi FoundIT secara lokal di komputer Anda:
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
+### 1. Clone Repository
+Pertama, *clone* repository ini ke komputer Anda dan masuk ke dalam folder proyek melalui terminal.
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/mraihanhadi/FoundIT.git
+cd FoundIT
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Install Dependensi PHP (Composer)
+Instal semua package dan dependensi Laravel yang dibutuhkan.
+```bash
+composer install
+```
 
-## Contributing
+### 3. Konfigurasi Environment (.env)
+Salin file konfigurasi bawaan Laravel (`.env.example`) menjadi `.env`.
+```bash
+cp .env.example .env
+```
+Buka file `.env` yang baru saja dibuat di *text editor* Anda, lalu atur bagian koneksi database:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=foundit_db  # Ubah sesuai dengan nama database yang Anda buat di MySQL
+DB_USERNAME=root        # Username database Anda
+DB_PASSWORD=            # Password database Anda (kosongkan jika default XAMPP)
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 4. Generate Application Key
+Generate kunci enkripsi keamanan untuk aplikasi Laravel Anda.
+```bash
+php artisan key:generate
+```
 
-## Code of Conduct
+### 5. Buat Database dan Jalankan Migrasi
+Pastikan Anda sudah membuat database kosong di aplikasi database manager Anda (misal bernama `foundit_db`). Setelah itu, jalankan perintah migrasi beserta seedernya (untuk membuat kerangka tabel dan mengisi data dummy admin/user).
+```bash
+php artisan migrate --seed
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 6. Link Storage (Sangat Penting untuk Foto/Gambar)
+Agar foto profil pengguna dan foto barang yang diunggah bisa ditampilkan di browser, Anda wajib menjalankan perintah storage link.
+```bash
+php artisan storage:link
+```
+> **Catatan Troubleshoot**: Jika Anda menarik (pull) pembaruan dari GitHub atau meng-clone ulang dan gambar tidak muncul (pesan error "link already exists"), silakan **hapus folder shortcut `storage` di dalam folder `public/` secara manual terlebih dahulu**, lalu jalankan kembali perintah `php artisan storage:link`.
 
-## Security Vulnerabilities
+### 7. Jalankan Server Lokal
+Nyalakan local development server bawaan Laravel.
+```bash
+php artisan serve
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Aplikasi sekarang sudah berjalan dengan sukses! Silakan buka web browser Anda dan akses:  
+**http://localhost:8000**
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 🔑 Akun Login Default
+Karena Anda telah menjalankan command `--seed` pada langkah ke-5, Anda dapat menggunakan akun berikut untuk masuk ke dalam aplikasi:
+
+**Akun Admin:**
+- **Email:** admin@foundit.com
+- **Password:** password
+
+**Akun Pengguna (User):**
+- **Email:** user@foundit.com
+- **Password:** password
