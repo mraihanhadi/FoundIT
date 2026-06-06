@@ -49,9 +49,8 @@ Route::prefix('user')->middleware(['auth', 'role:user'])->group(function () {
     Route::get('/riwayat-posting', [\App\Http\Controllers\ItemController::class, 'history'])->name('user.riwayat.posting');
     Route::delete('/item/{id}', [\App\Http\Controllers\ItemController::class, 'destroy'])->name('user.item.destroy');
 
-    Route::get('/edit-posting', function () {
-        return view('user.editpostingUser');
-    })->name('user.edit.posting');
+    Route::get('/edit-posting/{id}', [\App\Http\Controllers\ItemController::class, 'edit'])->name('user.edit.posting');
+    Route::post('/edit-posting/{id}', [\App\Http\Controllers\ItemController::class, 'update'])->name('user.update.posting');
 
     Route::get('/lapor-kehilangan', function () {
         return view('user.laporKehilanganUser');
@@ -111,9 +110,7 @@ Route::prefix('user')->middleware(['auth', 'role:user'])->group(function () {
         return view('user.editprofileuser', compact('user'));
     })->name('user.edit.profil');
 
-    Route::put('/profil/update', function () {
-        return redirect()->route('user.profil')->with('success', 'Profil berhasil diperbarui!');
-    })->name('user.update.profil');
+    Route::put('/profil/update', [App\Http\Controllers\ProfileController::class, 'update'])->name('user.update.profil');
 
 });
 
@@ -139,12 +136,9 @@ Route::get('/profil/edit', function () {
     return view('admin.editprofileAdmin', compact('user'));
 })->name('admin.edit.profil');
 
-Route::put('/profil/update', function () {
-    return redirect()->route('admin.profil');
-})->name('admin.update.profil');
-Route::get('/verifikasi-status', function () {
-    return view('admin.verifikasistatusAdmin');
-})->name('admin.verifikasi.status');
+Route::put('/profil/update', [App\Http\Controllers\ProfileController::class, 'update'])->name('admin.update.profil');
+Route::get('/verifikasi-status', [AdminController::class, 'verifikasiStatus'])->name('admin.verifikasi.status');
+Route::put('/item/{id}/status', [AdminController::class, 'updateItemStatus'])->name('admin.item.update_status');
 Route::get('/tambah-posting', function () {
     return view('admin.tambahpostingAdmin');
 })->name('admin.tambah.posting');

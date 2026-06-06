@@ -245,12 +245,12 @@
 
 @push('scripts')
 <script>
-var statusList = [];
+var statusList = @json($statusList);
 var editId     = null;
+var editItemId = null;
 var editStatus = null;
 
 function render() {
-  statusList = JSON.parse(localStorage.getItem('verifikasiStatus') || '[]');
 
   var wrap  = document.getElementById('statusTableWrap');
   var empty = document.getElementById('emptyState');
@@ -280,8 +280,10 @@ function render() {
     var responBadge = '';
     if (s.responUser === 'ya') {
       responBadge = '<span style="display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:9999px; font-size:11px; font-weight:600; background:#dcfce7; color:#16a34a;">✅ Iya barang saya</span>';
-    } else {
+    } else if (s.responUser === 'tidak') {
       responBadge = '<span style="display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:9999px; font-size:11px; font-weight:600; background:#fee2e2; color:#dc2626;">❌ Bukan barang saya</span>';
+    } else {
+      responBadge = '<span style="display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:9999px; font-size:11px; font-weight:600; background:#f3f4f6; color:#6b7280;">⏳ Belum ada respon</span>';
     }
 
     var statusBadge = '';
@@ -336,6 +338,7 @@ function openEdit(id) {
   if (!s) return;
 
   editId     = id;
+  editItemId = s.itemId;
   editStatus = s.status;
   document.getElementById('editNama').textContent = s.nama;
   highlightChoice(editStatus);
@@ -354,6 +357,7 @@ function closeEdit() {
   document.getElementById('editCard').style.transform = 'scale(0.92) translateY(20px)';
   document.body.style.overflow = '';
   editId     = null;
+  editItemId = null;
   editStatus = null;
 }
 
@@ -375,19 +379,30 @@ function highlightChoice(status) {
 }
 
 function simpanStatus() {
-  if (!editId || !editStatus) return;
+  if (!editId || !editStatus || !editItemId) return;
 
-  for (var i = 0; i < statusList.length; i++) {
-    if (statusList[i].id === editId) {
-      statusList[i].status = editStatus;
-      break;
+  fetch('{{ url("admin/item") }}/' + editItemId + '/status', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': '{{ csrf_token() }}'
+    },
+    body: JSON.stringify({ status: editStatus })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      for (var i = 0; i < statusList.length; i++) {
+        if (statusList[i].id === editId) {
+          statusList[i].status = editStatus;
+          break;
+        }
+      }
+      showToast('Status berhasil diperbarui!', 'success');
+      closeEdit();
+      render();
     }
-  }
-
-  localStorage.setItem('verifikasiStatus', JSON.stringify(statusList));
-  showToast('Status berhasil diperbarui!', 'success');
-  closeEdit();
-  render();
+  });
 }
 
 document.getElementById('searchInput').addEventListener('input', function() {

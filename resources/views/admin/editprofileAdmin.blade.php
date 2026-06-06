@@ -53,9 +53,9 @@
           <div class="editprofile-photo-wrapper" title="Klik untuk ganti foto">
             <img
               id="previewFoto"
-              src="{{ asset('gambar/' . ($user->foto ?? 'default.jpg')) }}"
-              alt="{{ $user->nama ?? 'Admin' }}"
-              onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($user->nama ?? 'Admin') }}&background=5b8dee&color=fff&size=220'"
+              src="{{ $user->foto ? asset('storage/' . $user->foto) : asset('gambar/default.jpg') }}"
+              alt="{{ $user->name ?? 'Admin' }}"
+              onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($user->name ?? 'Admin') }}&background=5b8dee&color=fff&size=220'"
             >
             <div class="photo-overlay">
               <span class="photo-overlay-text">Ganti<br>Foto</span>
@@ -63,7 +63,7 @@
           </div>
         </label>
         <input type="file" id="fotoInput" name="foto" accept="image/*"
-          style="display:none" onchange="previewPhoto(event)">
+          style="display:none" onchange="previewPhoto(event)" form="editProfileForm">
         <span class="editprofile-role">Admin</span>
       </div>
 
@@ -79,8 +79,8 @@
 
           <div class="field-group">
             <label class="field-label" for="nama">Nama</label>
-            <input class="field-input-edit" type="text" id="nama" name="nama"
-              value="{{ old('nama', $user->nama ?? '') }}"
+            <input class="field-input-edit" type="text" id="nama" name="name"
+              value="{{ old('name', $user->name ?? '') }}"
               placeholder="Masukkan nama" required>
           </div>
 

@@ -69,4 +69,40 @@ class AdminController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Verifikasi dihapus!']);
     }
+
+    public function verifikasiStatus()
+    {
+        $verifications = \App\Models\ItemVerification::with('item')
+            ->whereIn('status', ['approved', 'claimed', 'invalid'])
+            ->orderBy('updated_at', 'desc')
+            ->get();
+
+        $statusList = $verifications->map(function ($v) {
+            $responUser = 'belum';
+            if ($v->status === 'claimed') $responUser = 'ya';
+            elseif ($v->status === 'invalid') $responUser = 'tidak';
+
+            return [
+                'id' => $v->id,
+                'itemId' => $v->item_id,
+                'nama' => $v->item->nama_barang ?? '-',
+                'lokasiAmbil' => $v->lokasi_ambil,
+                'janji' => $v->janji_temu,
+                'responUser' => $responUser,
+                'status' => $v->item->status ?? 'Lost',
+                'foto' => $v->item && $v->item->foto ? asset('storage/' . $v->item->foto) : null,
+            ];
+        });
+
+        return view('admin.verifikasistatusAdmin', compact('statusList'));
+    }
+
+    public function updateItemStatus(Request $request, $id)
+    {
+        $item = Item::findOrFail($id);
+        $item->status = $request->status;
+        $item->save();
+        
+        return response()->json(['success' => true]);
+    }
 }

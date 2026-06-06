@@ -205,8 +205,7 @@ function handleOverlayClick(e) {
 }
 
 function goEdit(id) {
-  localStorage.setItem('editPostingId', id);
-  window.location.href = '{{ route("user.edit.posting") }}';
+  window.location.href = '{{ url("user/edit-posting") }}/' + id;
 }
 
 function confirmDelete(id) {

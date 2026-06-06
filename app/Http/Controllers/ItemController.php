@@ -71,4 +71,37 @@ class ItemController extends Controller
         $item->delete();
         return response()->json(['success' => true, 'message' => 'Postingan berhasil dihapus']);
     }
+
+    public function edit($id)
+    {
+        $item = Item::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+        return view('user.editpostingUser', compact('item'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $item = Item::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+        
+        $request->validate([
+            'nama_barang' => 'required|string|max:255',
+            'deskripsi_barang' => 'required|string',
+            'lokasi' => 'required|string|max:255',
+            'status' => 'required|in:Lost,Found',
+            'tanggal' => 'required|date',
+            'contact_person' => 'nullable|string|max:255',
+            'janji_temu' => 'nullable|string|max:255',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+        ]);
+
+        $itemData = $request->except('foto');
+
+        if ($request->hasFile('foto')) {
+            $path = $request->file('foto')->store('items', 'public');
+            $itemData['foto'] = $path;
+        }
+
+        $item->update($itemData);
+
+        return redirect()->route('user.riwayat.posting')->with('success', 'Postingan berhasil diperbarui!');
+    }
 }

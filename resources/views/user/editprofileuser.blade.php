@@ -69,16 +69,16 @@
           <div class="editprofile-photo-wrapper" title="Klik untuk ganti foto">
             <img
               id="previewFoto"
-              src="{{ asset('gambar/' . ($user->foto ?? 'default.jpg')) }}"
-              alt="{{ $user->nama ?? 'User' }}"
-              onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($user->nama ?? 'User') }}&background=5b8dee&color=fff&size=220'"
+              src="{{ $user->foto ? asset('storage/' . $user->foto) : asset('gambar/default.jpg') }}"
+              alt="{{ $user->name ?? 'User' }}"
+              onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($user->name ?? 'User') }}&background=5b8dee&color=fff&size=220'"
             >
             <div class="photo-overlay">
               <span class="photo-overlay-text">Ganti<br>Foto</span>
             </div>
           </div>
         </label>
-        <input type="file" id="fotoInput" name="foto" accept="image/*" style="display:none" onchange="previewPhoto(event)">
+        <input type="file" id="fotoInput" name="foto" accept="image/*" style="display:none" onchange="previewPhoto(event)" form="editProfileForm">
         <span class="editprofile-role">Pengguna</span>
       </div>
 
@@ -95,11 +95,11 @@
           <div class="field-group">
             <label class="field-label" for="nama">Nama</label>
             <input
-              class="field-input-edit @error('nama') border-red @enderror"
+              class="field-input-edit @error('name') border-red @enderror"
               type="text"
               id="nama"
-              name="nama"
-              value="{{ old('nama', $user->nama ?? 'Kevin Liu') }}"
+              name="name"
+              value="{{ old('name', $user->name ?? '') }}"
               placeholder="Masukkan nama"
               required
             >
@@ -115,7 +115,7 @@
               type="text"
               id="username"
               name="username"
-              value="{{ old('username', $user->username ?? 'KevinKece22') }}"
+              value="{{ old('username', $user->username ?? '') }}"
               placeholder="Masukkan username"
               required
             >
@@ -131,7 +131,7 @@
               type="email"
               id="email"
               name="email"
-              value="{{ old('email', $user->email ?? 'xxx@gmail.com') }}"
+              value="{{ old('email', $user->email ?? '') }}"
               placeholder="Masukkan email"
               required
             >

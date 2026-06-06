@@ -37,7 +37,8 @@
     </div>
 
     <div class="form-card">
-      <form id="formEdit">
+      <form action="{{ route('user.update.posting', $item->id) }}" method="POST" enctype="multipart/form-data" id="formEdit">
+        @csrf
 
         <div class="form-group">
           <label>Foto Barang</label>
@@ -51,34 +52,35 @@
               <strong>Klik untuk ganti foto</strong> atau drag & drop<br>
               <span>PNG, JPG, JPEG (maks. 5MB)</span>
             </div>
-            <input type="file" accept="image/*" onchange="previewImage(this)">
+            <input type="file" name="foto" accept="image/*" onchange="previewImage(this)">
           </div>
-          <img id="previewImg" class="preview-img" alt="Preview">
+          <img id="previewImg" class="preview-img {{ $item->foto ? 'show' : '' }}" src="{{ $item->foto ? asset('storage/' . $item->foto) : '' }}" alt="Preview">
         </div>
 
         <div class="form-group">
           <label for="namaBarang">Nama Barang <span style="color:var(--lost)">*</span></label>
-          <input type="text" id="namaBarang" class="form-control-custom"
-            placeholder="Contoh: iPhone 13, Dompet hitam..." required>
+          <input type="text" id="namaBarang" name="nama_barang" class="form-control-custom"
+            value="{{ $item->nama_barang }}" placeholder="Contoh: iPhone 13, Dompet hitam..." required>
         </div>
 
         <div class="form-group">
           <label for="deskripsi">Deskripsi Barang <span style="color:var(--lost)">*</span></label>
-          <textarea id="deskripsi" class="form-control-custom" rows="3"
+          <textarea id="deskripsi" name="deskripsi_barang" class="form-control-custom" rows="3"
             placeholder="Jelaskan ciri-ciri barang secara detail..."
-            required style="resize:vertical;"></textarea>
+            required style="resize:vertical;">{{ $item->deskripsi_barang }}</textarea>
         </div>
 
         <div class="form-group">
           <label for="lokasi">Lokasi Ditemukan/Hilang <span style="color:var(--lost)">*</span></label>
-          <input type="text" id="lokasi" class="form-control-custom"
-            placeholder="Contoh: Kantin GKU, Parkir TULT..." required>
+          <input type="text" id="lokasi" name="lokasi" class="form-control-custom"
+            value="{{ $item->lokasi }}" placeholder="Contoh: Kantin GKU, Parkir TULT..." required>
         </div>
 
-        <div class="form-group">
+        {{-- contact person, muncul kalau Found --}}
+        <div class="form-group" id="contactGroup">
           <label for="contact">Contact Person <span style="color:var(--lost)">*</span></label>
-          <input type="text" id="contact" class="form-control-custom"
-            placeholder="Nama : Nomor HP" required>
+          <input type="text" id="contact" name="contact_person" class="form-control-custom"
+            value="{{ $item->contact_person }}" placeholder="Nama : Nomor HP">
         </div>
 
         <div class="form-group">
@@ -87,19 +89,19 @@
             <button type="button" class="status-btn found" id="btnFound" onclick="setStatus('Found')">✓ Found</button>
             <button type="button" class="status-btn lost" id="btnLost" onclick="setStatus('Lost')">! Lost</button>
           </div>
-          <input type="hidden" id="statusBarang" value="Found">
+          <input type="hidden" id="statusBarang" name="status" value="{{ $item->status }}">
         </div>
 
         <div class="form-group">
           <label for="tanggal">Tanggal <span style="color:var(--lost)">*</span></label>
-          <input type="date" id="tanggal" class="form-control-custom" required>
+          <input type="date" id="tanggal" name="tanggal" class="form-control-custom" value="{{ $item->tanggal }}" required>
         </div>
 
         {{-- janji temu hanya muncul kalau status Found --}}
         <div class="form-group" id="grupJanjiTemu">
           <label for="janjiTemu">📍 Janji Temu / Lokasi Pengambilan <span style="color:var(--lost)">*</span></label>
-          <input type="text" id="janjiTemu" class="form-control-custom"
-            placeholder="Contoh: Lobby GKU, Pos Satpam...">
+          <input type="text" id="janjiTemu" name="janji_temu" class="form-control-custom"
+            value="{{ $item->janji_temu }}" placeholder="Contoh: Lobby GKU, Pos Satpam...">
         </div>
 
         <div class="form-actions">
@@ -120,46 +122,6 @@
 
 @push('scripts')
 <script>
-var editId = null;
-var currentFoto = null;
-
-function loadData() {
-  editId = parseInt(localStorage.getItem('editPostingId'));
-  if (!editId) {
-    window.location.href = '{{ route("user.riwayat.posting") }}';
-    return;
-  }
-
-  var postingan = JSON.parse(localStorage.getItem('postingan') || '[]');
-  var p = null;
-  for (var i = 0; i < postingan.length; i++) {
-    if (postingan[i].id === editId) {
-      p = postingan[i];
-      break;
-    }
-  }
-
-  if (!p) {
-    window.location.href = '{{ route("user.riwayat.posting") }}';
-    return;
-  }
-
-  document.getElementById('namaBarang').value = p.nama;
-  document.getElementById('deskripsi').value  = p.deskripsi;
-  document.getElementById('lokasi').value     = p.lokasi;
-  document.getElementById('contact').value    = p.contact || '';
-  document.getElementById('tanggal').value    = p.tanggal;
-  document.getElementById('janjiTemu').value  = p.janjiTemu || '';
-  setStatus(p.status);
-
-  currentFoto = p.foto;
-  if (p.foto) {
-    var img = document.getElementById('previewImg');
-    img.src = p.foto;
-    img.classList.add('show');
-  }
-}
-
 function previewImage(input) {
   var file = input.files[0];
   if (!file) return;
@@ -169,7 +131,6 @@ function previewImage(input) {
     var img = document.getElementById('previewImg');
     img.src = e.target.result;
     img.classList.add('show');
-    currentFoto = e.target.result;
   };
   reader.readAsDataURL(file);
 }
@@ -180,13 +141,27 @@ function setStatus(status) {
   if (status === 'Found') {
     document.getElementById('btnFound').classList.add('active');
     document.getElementById('btnLost').classList.remove('active');
-    document.getElementById('grupJanjiTemu').style.display = 'flex';
+    document.getElementById('contactGroup').style.display = 'block';
+    document.getElementById('grupJanjiTemu').style.display = 'block';
   } else {
     document.getElementById('btnLost').classList.add('active');
     document.getElementById('btnFound').classList.remove('active');
+    document.getElementById('contactGroup').style.display = 'none';
+    document.getElementById('contact').value = '';
     document.getElementById('grupJanjiTemu').style.display = 'none';
+    document.getElementById('janjiTemu').value = '';
   }
 }
+
+document.getElementById('formEdit').addEventListener('submit', function(e) {
+  var status = document.getElementById('statusBarang').value;
+  var janjiTemu = document.getElementById('janjiTemu').value.trim();
+
+  if (status === 'Found' && !janjiTemu) {
+    e.preventDefault();
+    showToast('Lokasi pengambilan wajib diisi untuk status Found.', 'error');
+  }
+});
 
 function showToast(msg, type) {
   if (!type) type = 'success';
@@ -198,54 +173,7 @@ function showToast(msg, type) {
   }, 3000);
 }
 
-document.getElementById('formEdit').addEventListener('submit', function(e) {
-  e.preventDefault();
-
-  var nama      = document.getElementById('namaBarang').value.trim();
-  var deskripsi = document.getElementById('deskripsi').value.trim();
-  var lokasi    = document.getElementById('lokasi').value.trim();
-  var contact   = document.getElementById('contact').value.trim();
-  var status    = document.getElementById('statusBarang').value;
-  var tanggal   = document.getElementById('tanggal').value;
-  var janjiTemu = document.getElementById('janjiTemu').value.trim();
-
-  if (!nama || !deskripsi || !lokasi || !contact) {
-    showToast('Harap isi semua field yang wajib diisi.', 'error');
-    return;
-  }
-  if (status === 'Found' && !janjiTemu) {
-    showToast('Lokasi pengambilan wajib diisi untuk status Found.', 'error');
-    return;
-  }
-
-  var postingan = JSON.parse(localStorage.getItem('postingan') || '[]');
-  var idx = -1;
-  for (var i = 0; i < postingan.length; i++) {
-    if (postingan[i].id === editId) {
-      idx = i;
-      break;
-    }
-  }
-
-  if (idx !== -1) {
-    postingan[idx].nama      = nama;
-    postingan[idx].deskripsi = deskripsi;
-    postingan[idx].lokasi    = lokasi;
-    postingan[idx].contact   = contact;
-    postingan[idx].status    = status;
-    postingan[idx].tanggal   = tanggal;
-    postingan[idx].janjiTemu = status === 'Found' ? janjiTemu : '';
-    postingan[idx].foto      = currentFoto;
-    localStorage.setItem('postingan', JSON.stringify(postingan));
-  }
-
-  showToast('Postingan berhasil diperbarui!', 'success');
-  setTimeout(function() {
-    window.location.href = '{{ route("user.riwayat.posting") }}';
-  }, 1200);
-});
-
-loadData();
+setStatus('{{ $item->status }}');
 </script>
 @endpush
 
